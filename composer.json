@@ -1,0 +1,19 @@
+{
+    "name": "nutrilux/theme",
+    "description": "Custom WordPress theme for Nutrilux e-commerce store",
+    "type": "wordpress-theme",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nutrilux\\": "theme-nutrilux/inc/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nutrilux Team",
+            "email": "dev@nutrilux.com"
+        }
+    ]
+}

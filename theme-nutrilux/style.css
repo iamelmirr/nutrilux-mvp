@@ -1,0 +1,46 @@
+/*
+Theme Name: Nutrilux
+Description: Custom WordPress theme for Nutrilux e-commerce store specializing in dehydrated egg products and performance nutrition supplements.
+Version: 1.0.0
+Author: Nutrilux Team
+Text Domain: nutrilux
+Domain Path: /languages
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 8.0
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Tags: e-commerce, food, nutrition, woocommerce, custom
+*/
+
+/*
+=== NUTRILUX THEME STYLES ===
+Main stylesheet importing base styles and design system.
+*/
+
+/* Import base styles and design system */
+@import url('./assets/css/base.css');
+
+/* Import layout components */
+@import url('./assets/css/layout.css');
+
+/* Import WooCommerce styles */
+@import url('./assets/css/woocommerce.css');
+
+/* Import single product styles */
+@import url('./assets/css/single-product.css');
+
+/* Import checkout styles */
+@import url('./assets/css/checkout.css');
+
+/* Import pages styles */
+@import url('./assets/css/pages.css');
+
+/* Reset few WooCommerce elements for better styling */
+.woocommerce-product-gallery { margin: 0 !important; }
+.woocommerce-product-gallery__wrapper { margin: 0 !important; }
+
+/*
+Component-specific styles will be added in later phases.
+Current phase (P4) includes WooCommerce shop styling and product cards.
+*/

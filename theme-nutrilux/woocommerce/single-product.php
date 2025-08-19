@@ -1,0 +1,21 @@
+<?php
+/**
+ * Single Product Template
+ */
+
+get_header(); ?>
+
+<main id="main" class="site-main woocommerce-main single-product-main">
+    <div class="wrap">
+        
+        <?php while (have_posts()) : ?>
+            <?php the_post(); ?>
+
+            <?php wc_get_template_part('content', 'single-product'); ?>
+
+        <?php endwhile; ?>
+
+    </div>
+</main>
+
+<?php get_footer(); ?>

@@ -1,0 +1,24 @@
+{
+  "name": "nutrilux-theme",
+  "version": "1.0.0",
+  "description": "Custom WordPress theme for Nutrilux e-commerce store",
+  "scripts": {
+    "dev": "echo 'Development build - will be configured in later phases'",
+    "build": "echo 'Production build - will be configured in later phases'",
+    "watch": "echo 'Watch mode - will be configured in later phases'"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "ecommerce",
+    "woocommerce",
+    "nutrilux"
+  ],
+  "author": "Nutrilux Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
