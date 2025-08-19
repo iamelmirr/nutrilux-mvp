@@ -19,10 +19,11 @@ if (empty($product) || !$product->is_visible()) {
         <!-- Product Image -->
         <a class="p-card__media" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
             <?php
-            /**
-             * Hook: woocommerce_before_shop_loop_item_title.
-             */
-            do_action('woocommerce_before_shop_loop_item_title');
+            if ($product->get_image_id()) {
+                echo $product->get_image('woocommerce_thumbnail');
+            } else {
+                echo '<div class="p-card__placeholder" aria-hidden="true"></div>';
+            }
             ?>
         </a>
 
@@ -36,33 +37,21 @@ if (empty($product) || !$product->is_visible()) {
         <!-- Product Excerpt -->
         <p class="p-card__excerpt">
             <?php 
-            $excerpt = get_the_excerpt();
-            if ($excerpt) {
-                $trimmed = wp_trim_words($excerpt, 14, '...');
-                echo esc_html($trimmed);
-            } else {
-                esc_html_e('Kvalitetan proizvod za vašu kuhinju i zdravlje.', 'nutrilux');
-            }
+            $raw = get_the_excerpt() ?: wp_strip_all_tags(get_the_content());
+            $short = wp_trim_words($raw, 14, '…');
+            echo $short ? esc_html($short) : esc_html__('Kvalitetan proizvod za vašu kuhinju i zdravlje.', 'nutrilux');
             ?>
         </p>
 
         <!-- Product Price -->
         <div class="p-card__price">
-            <?php
-            /**
-             * Hook: woocommerce_after_shop_loop_item_title.
-             */
-            do_action('woocommerce_after_shop_loop_item_title');
-            ?>
+            <?php echo $product->get_price_html(); ?>
         </div>
 
         <!-- Add to Cart Button -->
         <div class="p-card__actions">
             <?php
-            /**
-             * Hook: woocommerce_after_shop_loop_item.
-             */
-            do_action('woocommerce_after_shop_loop_item');
+            woocommerce_template_loop_add_to_cart();
             ?>
         </div>
 

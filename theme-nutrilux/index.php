@@ -33,6 +33,45 @@
                 </div>
             </section>
 
+            <?php if (is_front_page()) : ?>
+                <!-- Home Products Section -->
+                <section class="home-products">
+                    <div class="wrap">
+                        <h2><?php esc_html_e('Naši proizvodi', 'nutrilux'); ?></h2>
+                        <p class="section-intro"><?php esc_html_e('Kvalitetni proteinski sastojci i nutritivna rješenja.', 'nutrilux'); ?></p>
+                        <ul class="hp-grid">
+                            <?php
+                            $q = new WP_Query([
+                                'post_type' => 'product',
+                                'posts_per_page' => 4,
+                                'post_status' => 'publish'
+                            ]);
+                            if ($q->have_posts()):
+                                while ($q->have_posts()): $q->the_post();
+                                    wc_get_template_part('content', 'product');
+                                endwhile;
+                                wp_reset_postdata();
+                            else:
+                                if (current_user_can('manage_options')):
+                                    echo '<li class="hp-grid__empty">';
+                                    echo '<p>' . esc_html__('Nema proizvoda.', 'nutrilux') . '</p>';
+                                    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product')) . '" class="btn btn--outline">' . esc_html__('Dodaj prvi proizvod', 'nutrilux') . '</a>';
+                                    echo '</li>';
+                                else:
+                                    echo '<li class="hp-grid__empty">' . esc_html__('Proizvodi uskoro.', 'nutrilux') . '</li>';
+                                endif;
+                            endif;
+                            ?>
+                        </ul>
+                        <?php if ($q->have_posts()) : ?>
+                            <div class="home-products__cta">
+                                <a class="btn btn--outline" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"><?php esc_html_e('Svi proizvodi', 'nutrilux'); ?></a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </section>
+            <?php endif; ?>
+
             <!-- Page Content -->
             <section class="page-content">
                 
