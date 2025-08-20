@@ -31,11 +31,7 @@
             <!-- Logo -->
             <div class="site-branding">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo" rel="home">
-                    <?php 
-                    $site_name = get_bloginfo('name');
-                    if ($site_name) : ?>
-                        <span class="site-title"><?php echo esc_html($site_name); ?></span>
-                    <?php endif; ?>
+                    <span class="brand-text">Nutrilux</span>
                 </a>
             </div>
 
@@ -53,8 +49,11 @@
             <div class="header-actions">
                 
                 <!-- WooCommerce Cart (if active) -->
-                <?php if (class_exists('WooCommerce')) : ?>
-                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo sprintf(esc_attr__('Korpa (%d proizvoda)', 'nutrilux'), WC()->cart->get_cart_contents_count()); ?>">
+                <?php if (class_exists('WooCommerce')) : 
+                    $count = WC()->cart->get_cart_contents_count();
+                    $total = WC()->cart->get_cart_total();
+                ?>
+                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo esc_attr( sprintf('Korpa (%d artikala – %s)', $count, wp_strip_all_tags($total) ) ); ?>">
                         <span class="cart-icon" aria-hidden="true">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
                                 <path d="M7 6h14l-1.5 9h-11z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
@@ -63,7 +62,10 @@
                                 <circle cx="17" cy="21" r="1.5" fill="white"/>
                             </svg>
                         </span>
-                        <span class="cart-count" data-cart-count><?php echo WC()->cart->get_cart_contents_count(); ?></span>
+                        <span class="cart-meta">
+                            <span class="cart-count" data-cart-count><?php echo esc_html($count); ?></span>
+                            <span class="cart-total" data-cart-total><?php echo wp_kses_post($total); ?></span>
+                        </span>
                     </a>
                 <?php endif; ?>
 

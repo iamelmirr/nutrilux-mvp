@@ -195,6 +195,34 @@ function nutrilux_body_classes($classes) {
 add_filter('body_class', 'nutrilux_body_classes');
 
 /**
+ * WooCommerce Cart Fragment for Live Updates
+ */
+function nutrilux_cart_fragment($fragments) {
+    ob_start();
+    $count = WC()->cart->get_cart_contents_count();
+    $total = WC()->cart->get_cart_total(); // includes currency span
+    ?>
+    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo esc_attr( sprintf('Korpa (%d artikala – %s)', $count, wp_strip_all_tags($total) ) ); ?>">
+        <span class="cart-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
+                <path d="M7 6h14l-1.5 9h-11z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M7 6L6 3H3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="10" cy="21" r="1.5" fill="white"/>
+                <circle cx="17" cy="21" r="1.5" fill="white"/>
+            </svg>
+        </span>
+        <span class="cart-meta">
+            <span class="cart-count" data-cart-count><?php echo esc_html($count); ?></span>
+            <span class="cart-total" data-cart-total><?php echo wp_kses_post($total); ?></span>
+        </span>
+    </a>
+    <?php
+    $fragments['a.cart-button'] = ob_get_clean();
+    return $fragments;
+}
+add_filter('woocommerce_add_to_cart_fragments', 'nutrilux_cart_fragment');
+
+/**
  * Development Live Reload (only for local development)
  * DISABLE ALL CACHING FOR DEVELOPMENT
  */

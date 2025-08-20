@@ -6,18 +6,11 @@
             <div class="footer-brand">
                 <div class="footer-logo">
                     <a href="<?php echo esc_url(home_url('/')); ?>" rel="home">
-                        <span class="site-title"><?php bloginfo('name'); ?></span>
+                        <span class="brand-text">Nutrilux</span>
                     </a>
                 </div>
                 <p class="footer-description">
-                    <?php 
-                    $description = get_bloginfo('description');
-                    if ($description) {
-                        echo esc_html($description);
-                    } else {
-                        esc_html_e('Kvalitetni dehidrirani proizvodi za vašu kuhinju i zdravlje.', 'nutrilux');
-                    }
-                    ?>
+                    <?php esc_html_e('Kvalitetni dehidrirani proizvodi za vašu kuhinju i zdravlje.', 'nutrilux'); ?>
                 </p>
             </div>
 
@@ -61,10 +54,13 @@
             </div>
         </div>
 
+        <!-- Footer Divider -->
+        <div class="footer-divider"></div>
+
         <!-- Footer Bottom -->
         <div class="footer-bottom">
             <div class="footer-copyright">
-                <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. <?php esc_html_e('Sva prava zadržana.', 'nutrilux'); ?></p>
+                <p>&copy; <?php echo date('Y'); ?> Nutrilux. <?php esc_html_e('Sva prava zadržana.', 'nutrilux'); ?></p>
             </div>
             
             <!-- Payment Methods (placeholder) -->

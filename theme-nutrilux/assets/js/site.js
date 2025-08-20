@@ -5,6 +5,17 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Header Scroll Effect
+    const siteHeader = document.querySelector('.site-header');
+    if(siteHeader){
+        const toggleScrolled = () => {
+            if(window.scrollY > 10) siteHeader.classList.add('scrolled');
+            else siteHeader.classList.remove('scrolled');
+        };
+        toggleScrolled();
+        window.addEventListener('scroll', toggleScrolled, {passive:true});
+    }
+    
     // Navigation Toggle Functionality
     const navToggle = document.getElementById('navToggle');
     const mobileNav = document.getElementById('mobileNav');
@@ -48,24 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 toggleNav();
             }
         }
-        
-    // Cart Count Update Function
-    function updateCartCount(count) {
-        const btn = document.querySelector('.cart-button');
-        const span = document.querySelector('.cart-count');
-        if (btn && span) {
-            span.textContent = count;
-            btn.setAttribute('aria-label', 'Korpa (' + count + ' proizvod' + (count === 1 ? '' : 'a') + ')');
-        }
-    }
-    
-    // WooCommerce cart fragment update listener
-    if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('updated_wc_div', function() {
-            const cartCount = jQuery('.cart-count').text() || '0';
-            updateCartCount(parseInt(cartCount));
-        });
-    }
         
         // Toggle button click
         navToggle.addEventListener('click', toggleNav);
@@ -206,8 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
 });
 
-// Cart Update (for WooCommerce)
-document.addEventListener('wc_fragments_refreshed', function() {
-    // This event fires when WooCommerce updates cart fragments
-    console.log('Cart updated');
-});
+// WooCommerce cart fragment safety re-label after refresh
+if (typeof jQuery !== 'undefined') {
+    jQuery(document.body).on('wc_fragments_refreshed', function(){
+        const btn = document.querySelector('.cart-button');
+        if(!btn) return;
+        const count = btn.querySelector('[data-cart-count]')?.textContent || '0';
+        const total = btn.querySelector('[data-cart-total]')?.textContent.replace(/\s+/g,' ').trim() || '';
+        btn.setAttribute('aria-label', `Korpa (${count} artikala – ${total})`);
+    });
+}

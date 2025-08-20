@@ -4,13 +4,19 @@
     
     <!-- ===== HERO SECTION ===== -->
     <section class="page-hero">
-        <div class="hero-bg"></div>
+        <div class="hero-bg-layers">
+            <span class="hero-orb hero-orb--left"></span>
+            <span class="hero-orb hero-orb--right"></span>
+        </div>
         <div class="wrap">
             <div class="hero-content">
-                <h1 class="page-title">Dobrodošli u Nutrilux</h1>
-                <p class="hero-description">Premium dehidrirani proizvodi od jaja i performance suplementi za vašu kuhinju i zdravlje.</p>
+                <h1 class="page-title">Premium nutritivna rješenja od jajeta</h1>
+                <p class="hero-description">
+                    Nutrilux proizvodi kombinuju čistoću sastojaka i kontrolisan kvalitet – za profesionalce, sportiste i kućnu primjenu.
+                </p>
                 <div class="hero-actions">
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="btn btn-primary">Pogledaj proizvode</a>
+                    <a href="<?php echo esc_url(home_url('/kontakt/')); ?>" class="btn btn-secondary">Kontaktiraj nas</a>
                 </div>
             </div>
         </div>
@@ -20,7 +26,7 @@
     <section class="home-products">
         <div class="wrap">
             <h2><?php esc_html_e('Naši proizvodi', 'nutrilux'); ?></h2>
-            <p class="section-intro"><?php esc_html_e('Kvalitetni proteinski sastojci i nutritivna rješenja.', 'nutrilux'); ?></p>
+            <p class="section-intro"><?php esc_html_e('Kvalitetni proteinski sastojci i nutritivna rješenja za sve potrebe.', 'nutrilux'); ?></p>
             <ul class="hp-grid">
                 <?php
                 $q = new WP_Query([
