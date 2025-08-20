@@ -1333,7 +1333,13 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
 @media (min-width: 768px) {
   .p-card__actions .button,
   .p-card__actions .btn {
-    padding: 12px 16px;
+    padding: 10px 14px;
+  }
+  
+  /* Homepage specific - još manji padding */
+  .home-products .p-card__actions .button,
+  .home-products .p-card__actions .btn {
+    padding: 8px 12px;
   }
 }
 
