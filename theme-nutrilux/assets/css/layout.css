@@ -39,7 +39,7 @@ body.admin-bar { --admin-bar-offset:32px; }
   background:#FFFFFFEE;
 }
 .site-header .wrap {
-  padding:10px 16px;
+  padding:10px 0;
 }
 .header-inner {
   display:grid;
@@ -54,6 +54,16 @@ body.admin-bar { --admin-bar-offset:32px; }
   font-size:1.15rem;
   color:#222;
   text-decoration:none;
+}
+
+/* Footer brand text override for dark background */
+.footer-logo .brand-text {
+  color:#F0F0F0;
+  transition:color .25s;
+}
+.footer-logo a:hover .brand-text,
+.footer-logo a:focus-visible .brand-text {
+  color:var(--color-accent,#F5C542);
 }
 .main-nav { display:none; } /* mobile hidden */
 
@@ -123,7 +133,7 @@ body.admin-bar { --admin-bar-offset:32px; }
 }
 
 @media (min-width:1080px){
-  .site-header .wrap { padding:14px 48px; }
+  .site-header .wrap { padding:14px 20px; }
   .cart-total { display:inline; }
   .cart-button { gap:10px; }
   .main-nav { display:flex; justify-content:center; }
@@ -438,12 +448,22 @@ body.admin-bar { --admin-bar-offset:32px; }
   gap:24px;
 }
 .mobile-menu a {
-  color:#fff;
+  color:#F5F5F5;
   font-size:1.2rem;
   font-weight:500;
   text-decoration:none;
   position:relative;
   padding:6px 2px;
+  transition:color .25s;
+  opacity:1;
+}
+.mobile-menu a:hover,
+.mobile-menu a:focus-visible {
+  color:var(--color-accent,#F5C542);
+}
+.mobile-menu a[aria-current="page"] {
+  color:#FFFFFF;
+  font-weight:600;
 }
 .mobile-menu a[aria-current="page"]::after {
   content:"";
@@ -486,7 +506,7 @@ body.admin-bar { --admin-bar-offset:32px; }
   display:flex; flex-direction:column; gap:8px;
 }
 .footer-menu a {
-  color:#E8E7E4;
+  color:#F0F0F0;
   text-decoration:none;
   position:relative;
   padding:4px 0;
@@ -886,23 +906,25 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
 }
 
 .nav-panel .nav-menu a {
-  color: var(--color-white);
+  color: var(--color-white) !important;
   font-size: 1.25rem;
   font-weight: 600;
   padding: var(--space-md);
   border-radius: var(--radius-md);
   transition: all 0.3s ease;
+  display: block;
+  text-decoration: none;
 }
 
 .nav-panel .nav-menu a:hover,
 .nav-panel .nav-menu a:focus {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--color-primary);
+  color: var(--color-primary) !important;
 }
 
 .nav-panel .nav-menu a.nav-link--active {
   background: rgba(245, 197, 66, 0.2);
-  color: var(--color-primary);
+  color: var(--color-primary) !important;
 }
 
 /* Prevent body scroll when nav is open */
@@ -1041,6 +1063,11 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
   gap: 6px;
 }
 
+.footer-content .footer-links .footer-menu li a {
+  color: #F0F0F0;
+  transition: color .25s;
+}
+
 .contact-item {
   display: flex;
   align-items: flex-start;
@@ -1122,7 +1149,11 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
 /* Desktop */
 @media (min-width: 1080px) {
   .header-inner {
-    padding: var(--space-lg) 0;
+    padding: 4px 0;
+  }
+
+  .p-card__actions a {
+    padding: 12px 6px;
   }
   
   .site-main {
@@ -1298,6 +1329,47 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
   background: var(--color-primary-dark);
 }
 
+/* Desktop: smanjiti padding za dugmad u kartama */
+@media (min-width: 768px) {
+  .p-card__actions .button,
+  .p-card__actions .btn {
+    padding: 12px 16px;
+  }
+}
+
+/* Sakrij "View Cart" / "Pogledaj korpu" dugme */
+.added_to_cart {
+  display: none !important;
+}
+
+/* Add to Cart Success Popup */
+.cart-success-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 9999;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.cart-success-popup.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.cart-success-popup::before {
+  content: "✓";
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
 /* ===== IMPROVED FOOTER CONTRAST ===== */
 .site-footer {
   background: #121416;
@@ -1314,6 +1386,29 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
 .site-footer a:hover,
 .site-footer a:focus-visible {
   color: var(--color-primary);
+}
+
+/* Mobile Navigation Override - Force visibility */
+.nav-panel .mobile-menu a,
+.nav-panel .nav-menu a {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.nav-panel .mobile-menu a:hover,
+.nav-panel .mobile-menu a:focus,
+.nav-panel .nav-menu a:hover,
+.nav-panel .nav-menu a:focus {
+  color: var(--color-primary) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-panel .mobile-menu a[aria-current="page"],
+.nav-panel .nav-menu a.nav-link--active {
+  color: var(--color-primary) !important;
+  background: rgba(245, 197, 66, 0.2) !important;
 }
 
 .footer-title {

@@ -126,6 +126,23 @@ document.addEventListener('DOMContentLoaded', function() {
         initProductCardNavigation();
     });
     
+    // Add to Cart Success - Vanilla JS fallback
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add_to_cart_button')) {
+            // Add event listener for successful add to cart
+            const checkForSuccess = setInterval(function() {
+                if (e.target.classList.contains('added')) {
+                    clearInterval(checkForSuccess);
+                    const productName = e.target.getAttribute('aria-label')?.replace('Add to cart: "', '').replace('"', '') || 'Proizvod';
+                    showCartSuccessPopup(productName);
+                }
+            }, 100);
+            
+            // Clear interval after 5 seconds to prevent memory leaks
+            setTimeout(() => clearInterval(checkForSuccess), 5000);
+        }
+    });
+    
     // Skip Link Enhancement
     const skipLink = document.querySelector('.skip-link');
     if (skipLink) {
@@ -171,4 +188,45 @@ if (typeof jQuery !== 'undefined') {
         const totalRaw = total.replace(/<[^>]*>/g, ''); // Strip HTML tags
         btn.setAttribute('aria-label', `Korpa (${count} artikala – ${totalRaw})`);
     });
+    
+    // Add to Cart Success Popup
+    jQuery(document.body).on('added_to_cart', function(event, fragments, cart_hash, button) {
+        // Get product name from button's aria-label or data attribute
+        const productName = button.attr('aria-label')?.replace('Add to cart: "', '').replace('"', '') || 'Proizvod';
+        
+        // Create and show popup
+        showCartSuccessPopup(productName);
+    });
+}
+
+// Cart Success Popup Function
+function showCartSuccessPopup(productName) {
+    // Remove existing popup if any
+    const existingPopup = document.querySelector('.cart-success-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    // Create new popup
+    const popup = document.createElement('div');
+    popup.className = 'cart-success-popup';
+    popup.textContent = `${productName} dodano u korpu!`;
+    
+    // Add to body
+    document.body.appendChild(popup);
+    
+    // Show popup with animation
+    setTimeout(() => {
+        popup.classList.add('show');
+    }, 100);
+    
+    // Hide and remove popup after 3 seconds
+    setTimeout(() => {
+        popup.classList.remove('show');
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        }, 300);
+    }, 3000);
 }
