@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Custom WordPress theme for Nutrilux e-commerce store",
   "scripts": {
-    "dev": "echo 'Development build - will be configured in later phases'",
+    "dev": "browser-sync start --proxy \"nutrilux10.local\" --files \"theme-nutrilux/**/*.css, theme-nutrilux/**/*.js, theme-nutrilux/**/*.php\" --reload-delay 1000",
+    "sync": "browser-sync start --proxy \"nutrilux10.local\" --files \"theme-nutrilux/**/*\" --reload-delay 500",
     "build": "echo 'Production build - will be configured in later phases'",
     "watch": "echo 'Watch mode - will be configured in later phases'"
   },

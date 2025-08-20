@@ -94,14 +94,15 @@ add_filter('wp_get_attachment_image', 'nutrilux_add_lazy_loading', 15, 4);
 /**
  * Enhance WooCommerce product images with performance attributes
  */
-function nutrilux_woocommerce_image_attributes($html, $attachment_id, $size, $permalink, $icon, $alt) {
+function nutrilux_woocommerce_image_attributes($html, $attachment_id) {
     // Add dimensions and lazy loading for WooCommerce images
-    $html = nutrilux_add_image_dimensions($html, $attachment_id, $size, $icon);
-    $html = nutrilux_add_lazy_loading($html, $attachment_id, $size, $icon);
+    // For WooCommerce filter, we only get $html and $attachment_id
+    $html = nutrilux_add_image_dimensions($html, $attachment_id, 'thumbnail', false);
+    $html = nutrilux_add_lazy_loading($html, $attachment_id, 'thumbnail', false);
     
     return $html;
 }
-add_filter('woocommerce_single_product_image_thumbnail_html', 'nutrilux_woocommerce_image_attributes', 10, 6);
+add_filter('woocommerce_single_product_image_thumbnail_html', 'nutrilux_woocommerce_image_attributes', 10, 2);
 
 /**
  * Improve accessibility for WooCommerce elements

@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Navigation Toggle Functionality
     const navToggle = document.getElementById('navToggle');
-    const primaryNav = document.getElementById('primaryNav');
+    const mobileNav = document.getElementById('mobileNav');
     const body = document.body;
     
-    if (navToggle && primaryNav) {
+    if (navToggle && mobileNav) {
         
         // Toggle navigation
         function toggleNav() {
@@ -19,16 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update ARIA attributes
             navToggle.setAttribute('aria-expanded', newState);
-            navToggle.setAttribute('aria-label', newState ? 'Zatvori glavni meni' : 'Otvori glavni meni');
+            navToggle.setAttribute('aria-label', newState ? 'Zatvori meni' : 'Otvori meni');
             
             // Toggle classes
-            primaryNav.classList.toggle('nav-panel--open', newState);
+            mobileNav.classList.toggle('nav-panel--open', newState);
             body.classList.toggle('nav-open', newState);
             
             // Focus management
             if (newState) {
                 // Focus first link in navigation when opened
-                const firstLink = primaryNav.querySelector('a');
+                const firstLink = mobileNav.querySelector('a');
                 if (firstLink) {
                     firstLink.focus();
                 }
@@ -49,6 +49,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+    // Cart Count Update Function
+    function updateCartCount(count) {
+        const btn = document.querySelector('.cart-button');
+        const span = document.querySelector('.cart-count');
+        if (btn && span) {
+            span.textContent = count;
+            btn.setAttribute('aria-label', 'Korpa (' + count + ' proizvod' + (count === 1 ? '' : 'a') + ')');
+        }
+    }
+    
+    // WooCommerce cart fragment update listener
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document.body).on('updated_wc_div', function() {
+            const cartCount = jQuery('.cart-count').text() || '0';
+            updateCartCount(parseInt(cartCount));
+        });
+    }
+        
         // Toggle button click
         navToggle.addEventListener('click', toggleNav);
         
@@ -60,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Close when clicking navigation links
-        const navLinks = primaryNav.querySelectorAll('a');
+        const navLinks = mobileNav.querySelectorAll('a');
         navLinks.forEach(function(link) {
             link.addEventListener('click', function() {
                 // Small delay to allow navigation to complete
@@ -70,10 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Close when clicking outside navigation (mobile)
         document.addEventListener('click', function(e) {
-            const isClickInsideNav = primaryNav.contains(e.target);
+            const isClickInsideNav = mobileNav.contains(e.target);
             const isClickOnToggle = navToggle.contains(e.target);
             
-            if (!isClickInsideNav && !isClickOnToggle && primaryNav.classList.contains('nav-panel--open')) {
+            if (!isClickInsideNav && !isClickOnToggle && mobileNav.classList.contains('nav-panel--open')) {
                 closeNav();
             }
         });

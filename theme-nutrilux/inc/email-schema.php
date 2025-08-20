@@ -118,7 +118,7 @@ add_action('wp_head', 'nutrilux_add_organization_schema');
  * Add Product Schema JSON-LD to single product pages
  */
 function nutrilux_add_product_schema() {
-    global $nutrilux_schema_added, $product;
+    global $nutrilux_schema_added;
     
     // Only on single product pages and prevent duplicates
     if (!is_product() || $nutrilux_schema_added) {
@@ -128,29 +128,43 @@ function nutrilux_add_product_schema() {
     $nutrilux_schema_added = true;
     
     // Get current product
-    if (!$product) {
-        global $woocommerce, $post;
-        $product = wc_get_product($post->ID);
-    }
-    
-    if (!$product) {
+    global $post;
+    if (!$post || !$post->ID) {
         return;
     }
     
-    // Get product data
-    $product_name = $product->get_name();
-    $product_description = $product->get_short_description() ?: $product->get_description();
-    $product_image = wp_get_attachment_image_src(get_post_thumbnail_id($product->get_id()), 'full');
-    $product_url = get_permalink($product->get_id());
-    $product_price = $product->get_price();
-    $currency = get_woocommerce_currency();
+    $product = wc_get_product($post->ID);
     
-    // Get nutritional meta data
-    $energy = get_post_meta($product->get_id(), '_nutri_energy_kcal', true);
-    $protein = get_post_meta($product->get_id(), '_nutri_protein_g', true);
-    $fat = get_post_meta($product->get_id(), '_nutri_fat_g', true);
-    $carbs = get_post_meta($product->get_id(), '_nutri_carbs_g', true);
-    $ingredients = get_post_meta($product->get_id(), '_nutri_ingredients', true);
+    if (!$product || !is_object($product)) {
+        return;
+    }
+    
+    // Get product data with additional checks
+    try {
+        $product_name = $product->get_name();
+        $product_description = $product->get_short_description() ?: $product->get_description();
+        $product_id = $product->get_id();
+        $product_image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'full');
+        $product_url = get_permalink($product_id);
+        $product_price = $product->get_price();
+        $currency = get_woocommerce_currency();
+        
+        // Validate required data
+        if (!$product_name || !$product_id) {
+            return;
+        }
+        
+        // Get nutritional meta data
+        $energy = get_post_meta($product_id, '_nutri_energy_kcal', true);
+        $protein = get_post_meta($product_id, '_nutri_protein_g', true);
+        $fat = get_post_meta($product_id, '_nutri_fat_g', true);
+        $carbs = get_post_meta($product_id, '_nutri_carbs_g', true);
+        $ingredients = get_post_meta($product_id, '_nutri_ingredients', true);
+    } catch (Exception $e) {
+        // Log error and return gracefully
+        error_log('Nutrilux schema error: ' . $e->getMessage());
+        return;
+    }
     $shelf_life = get_post_meta($product->get_id(), '_nutri_shelf_life', true);
     
     // Build base schema

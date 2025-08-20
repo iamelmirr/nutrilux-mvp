@@ -123,6 +123,56 @@ function nutrilux_seed_minimal() {
 add_action('init', 'nutrilux_seed_minimal');
 
 /**
+ * Create basic pages (O nama, Kontakt)
+ */
+function nutrilux_create_pages() {
+    // Force recreation for testing
+    // if (get_option('nutrilux_pages_created')) return;
+    
+    $pages = [
+        [
+            'title' => 'O nama',
+            'slug' => 'o-nama',
+            'template' => 'page-o-nama.php',
+            'content' => '<p>Saznajte više o našoj kompaniji, misiji i vrijednostima.</p>'
+        ],
+        [
+            'title' => 'Kontakt',
+            'slug' => 'kontakt', 
+            'template' => 'page-kontakt.php',
+            'content' => '<p>Kontaktirajte nas za sva pitanja o proizvodima ili saradnji.</p>'
+        ]
+    ];
+    
+    foreach ($pages as $page) {
+        // Check if page already exists
+        $existing = get_page_by_path($page['slug']);
+        if ($existing) {
+            // Update template if page exists
+            update_post_meta($existing->ID, '_wp_page_template', $page['template']);
+            continue;
+        }
+        
+        $page_id = wp_insert_post([
+            'post_title' => $page['title'],
+            'post_name' => $page['slug'],
+            'post_content' => $page['content'],
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_author' => 1
+        ]);
+        
+        if ($page_id && !is_wp_error($page_id)) {
+            // Set page template
+            update_post_meta($page_id, '_wp_page_template', $page['template']);
+        }
+    }
+    
+    update_option('nutrilux_pages_created', 1);
+}
+add_action('init', 'nutrilux_create_pages');
+
+/**
  * Add body classes for active navigation
  */
 function nutrilux_body_classes($classes) {
@@ -145,9 +195,58 @@ function nutrilux_body_classes($classes) {
 add_filter('body_class', 'nutrilux_body_classes');
 
 /**
+ * Development Live Reload (only for local development)
+ * DISABLE ALL CACHING FOR DEVELOPMENT
+ */
+function nutrilux_disable_cache_dev() {
+    if (strpos($_SERVER['HTTP_HOST'], 'nutrilux10.local') !== false) {
+        // Disable all caching
+        if (!defined('WP_CACHE')) define('WP_CACHE', false);
+        
+        // Send no-cache headers
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        
+        // Disable WordPress object cache
+        wp_cache_flush();
+    }
+}
+add_action('init', 'nutrilux_disable_cache_dev');
+
+function nutrilux_live_reload() {
+    // Only on local development - check if site is nutrilux10.local
+    if (strpos($_SERVER['HTTP_HOST'], 'nutrilux10.local') !== false || 
+        strpos($_SERVER['HTTP_HOST'], 'localhost') !== false ||
+        strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false) {
+        ?>
+        <div style="position:fixed;top:10px;right:10px;background:#333;color:#fff;padding:8px 12px;border-radius:4px;font-size:12px;z-index:9999;">
+            🔥 DEV MODE - Pritisni F5 za refresh
+        </div>
+        <script>
+        // SIMPLE NOTIFICATION SYSTEM
+        console.log('🔥 Nutrilux DEV MODE - Manual refresh required');
+        
+        // Shortcut za refresh
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                console.log('🔄 Manual refresh triggered');
+            }
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'nutrilux_live_reload');
+
+/**
  * Enqueue scripts and styles
  */
 function nutrilux_enqueue_assets() {
+    // Development versioning - force cache refresh
+    $dev_version = (strpos($_SERVER['HTTP_HOST'], 'nutrilux10.local') !== false) ? 
+                   time() : wp_get_theme()->get('Version');
+    
     // Google Fonts - Poppins and Inter
     // TODO: Consider self-hosting fonts for better performance and GDPR compliance
     wp_enqueue_style(
@@ -162,7 +261,7 @@ function nutrilux_enqueue_assets() {
         'nutrilux-base',
         get_template_directory_uri() . '/assets/css/base.css',
         array('nutrilux-google-fonts'),
-        wp_get_theme()->get('Version')
+        $dev_version
     );
     
     // Enqueue layout CSS file
@@ -170,7 +269,7 @@ function nutrilux_enqueue_assets() {
         'nutrilux-layout',
         get_template_directory_uri() . '/assets/css/layout.css',
         array('nutrilux-base'),
-        wp_get_theme()->get('Version')
+        $dev_version
     );
     
     // Enqueue WooCommerce CSS file (if WooCommerce is active)
@@ -179,7 +278,7 @@ function nutrilux_enqueue_assets() {
             'nutrilux-woocommerce',
             get_template_directory_uri() . '/assets/css/woocommerce.css',
             array('nutrilux-layout'),
-            wp_get_theme()->get('Version')
+            $dev_version
         );
         
         // Single product page styles
@@ -188,7 +287,7 @@ function nutrilux_enqueue_assets() {
                 'nutrilux-single-product',
                 get_template_directory_uri() . '/assets/css/single-product.css',
                 array('nutrilux-layout'),
-                wp_get_theme()->get('Version')
+                $dev_version
             );
         }
         
@@ -198,7 +297,7 @@ function nutrilux_enqueue_assets() {
                 'nutrilux-checkout',
                 get_template_directory_uri() . '/assets/css/checkout.css',
                 array('nutrilux-layout'),
-                wp_get_theme()->get('Version')
+                $dev_version
             );
         }
         
@@ -208,7 +307,7 @@ function nutrilux_enqueue_assets() {
                 'nutrilux-pages',
                 get_template_directory_uri() . '/assets/css/pages.css',
                 array('nutrilux-layout'),
-                wp_get_theme()->get('Version')
+                $dev_version
             );
         }
     }
@@ -218,7 +317,7 @@ function nutrilux_enqueue_assets() {
         'nutrilux-style',
         get_stylesheet_uri(),
         array('nutrilux-layout', 'nutrilux-woocommerce'),
-        wp_get_theme()->get('Version')
+        $dev_version
     );
     
     // Enqueue JavaScript
@@ -226,7 +325,7 @@ function nutrilux_enqueue_assets() {
         'nutrilux-site',
         get_template_directory_uri() . '/assets/js/site.js',
         array(),
-        wp_get_theme()->get('Version'),
+        $dev_version,
         true
     );
 }
@@ -251,18 +350,12 @@ function nutrilux_fallback_menu() {
     }
     
     // About page
-    $about_page = get_page_by_path('o-nama');
-    if ($about_page) {
-        $about_active = (is_page($about_page->ID)) ? ' aria-current="page"' : '';
-        echo '<li><a href="' . esc_url(get_permalink($about_page->ID)) . '"' . $about_active . '>' . esc_html__('O nama', 'nutrilux') . '</a></li>';
-    }
+    $about_active = is_page('o-nama') ? ' aria-current="page"' : '';
+    echo '<li><a href="' . esc_url(home_url('/o-nama/')) . '"' . $about_active . '>' . esc_html__('O nama', 'nutrilux') . '</a></li>';
     
     // Contact page
-    $contact_page = get_page_by_path('kontakt');
-    if ($contact_page) {
-        $contact_active = (is_page($contact_page->ID)) ? ' aria-current="page"' : '';
-        echo '<li><a href="' . esc_url(get_permalink($contact_page->ID)) . '"' . $contact_active . '>' . esc_html__('Kontakt', 'nutrilux') . '</a></li>';
-    }
+    $contact_active = is_page('kontakt') ? ' aria-current="page"' : '';
+    echo '<li><a href="' . esc_url(home_url('/kontakt/')) . '"' . $contact_active . '>' . esc_html__('Kontakt', 'nutrilux') . '</a></li>';
     
     echo '</ul>';
 }
@@ -284,18 +377,12 @@ function nutrilux_footer_fallback_menu() {
     }
     
     // About page
-    $about_page = get_page_by_path('o-nama');
-    if ($about_page) {
-        $about_active = (is_page($about_page->ID)) ? ' aria-current="page"' : '';
-        echo '<li><a href="' . esc_url(get_permalink($about_page->ID)) . '"' . $about_active . '>' . esc_html__('O nama', 'nutrilux') . '</a></li>';
-    }
+    $about_active = is_page('o-nama') ? ' aria-current="page"' : '';
+    echo '<li><a href="' . esc_url(home_url('/o-nama/')) . '"' . $about_active . '>' . esc_html__('O nama', 'nutrilux') . '</a></li>';
     
     // Contact page
-    $contact_page = get_page_by_path('kontakt');
-    if ($contact_page) {
-        $contact_active = (is_page($contact_page->ID)) ? ' aria-current="page"' : '';
-        echo '<li><a href="' . esc_url(get_permalink($contact_page->ID)) . '"' . $contact_active . '>' . esc_html__('Kontakt', 'nutrilux') . '</a></li>';
-    }
+    $contact_active = is_page('kontakt') ? ' aria-current="page"' : '';
+    echo '<li><a href="' . esc_url(home_url('/kontakt/')) . '"' . $contact_active . '>' . esc_html__('Kontakt', 'nutrilux') . '</a></li>';
     
     echo '</ul>';
 }

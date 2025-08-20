@@ -1,5 +1,107 @@
 # Nutrilux Development Log
 
+## HEADER CENTRIRAN NAV, KORPA REDIZAJN, LINKOVI, FOOTER KONTRAST & GRID SPRINT ✓
+
+**Status:** ZAVRŠENO ✓  
+**Datum:** 2025-08-19  
+
+### SECTION 1: Sažetak
+
+- ✅ Refaktorisao header HTML strukturu sa CSS grid layout (3 kolone: logo | nav | actions)
+- ✅ Dodao linkove "O nama" (/o-nama/) i "Kontakt" (/kontakt/) u glavnu navigaciju
+- ✅ Implementirao novi dizajn korpe: žuta pozadina (#F5C542), bijela SVG ikona, broj artikala
+- ✅ Dodao hover/active styling linkova: underline animacija + aria-current="page" za aktivno stanje
+- ✅ Uklonio WordPress default blog sadržaj sa početne stranice (kreiran front-page.php)
+- ✅ Poboljšao footer kontrast: tekst #E8E7E4, heading #FFFFFF, hover accent
+- ✅ Implementirao footer grid: 1 kolona mobile → 3 kolone na ≥720px
+- ✅ Dodao JavaScript funkciju za dinamički aria-label korpe
+- ✅ Mobile-first pristup bez horizontalnog scroll-a
+
+### SECTION 2: Fajlovi
+
+- **header.php**: Kompletno refaktorisan sa grid layout, nova korpa sa SVG ikonom, dodani O nama/Kontakt linkovi
+- **index.php**: Uklonjen WordPress default loop sa početne stranice, conditionalno prikazivanje
+- **front-page.php**: Novi fajl za bolju kontrolu početne stranice, samo hero + proizvodi sekcija
+- **assets/css/layout.css**: Header grid, korpa stilovi, nav animacije, footer kontrast, responsive grid
+- **assets/css/base.css**: Dodane CSS varijable --color-accent, --color-muted, --color-text
+- **assets/js/site.js**: updateCartCount funkcija, ažurirane ID reference
+
+### SECTION 3: Ključni kod
+
+#### Header grid layout:
+```css
+.header-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+```
+
+#### Nav link underline animacija:
+```css
+.nav-menu a::after {
+  content: "";
+  position: absolute;
+  left: 50%; right: 50%; bottom: 2px;
+  height: 2px;
+  background: var(--color-accent);
+  opacity: 0;
+  transition: all .3s;
+}
+
+.nav-menu a:hover::after {
+  left: 0; right: 0;
+  opacity: 1;
+}
+```
+
+#### Nova korpa sa SVG:
+```php
+<a href="/cart/" class="cart-button" aria-label="Korpa (0 proizvoda)">
+    <span class="cart-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M7 6h14l-1.5 9h-11z" stroke="white" stroke-width="2"/>
+        </svg>
+    </span>
+    <span class="cart-count" data-cart-count>0</span>
+</a>
+```
+
+### SECTION 4: Acceptance Criteria
+
+| Stavka | Status | Napomena |
+|--------|--------|----------|
+| Header 4 linka (Početna, Proizvodi, O nama, Kontakt) | PASS | Desktop i mobile nav |
+| Navigacija centrirana na ≥1080px | PASS | CSS grid minmax layout |
+| Active link underline + hover animacija | PASS | aria-current styling |
+| Korpa žuta (#F5C542), bijela SVG ikona | PASS | Kompletno novi dizajn |
+| Nema WordPress default blog na početnoj | PASS | front-page.php kreiran |
+| Footer kontrast AA compliance | PASS | #E8E7E4 na #121416 |
+| Footer 3 kolone ≥720px, 1 mobile | PASS | CSS grid responsive |
+| Nema horizontalnog scroll-a 360px | PASS | Mobile-first layout |
+| Empty shop state neutralna poruka | PASS | "Proizvodi uskoro dostupni" |
+| aria-current="page" aktivni link | PASS | HTML output implementiran |
+| Fokus ring vidljiv | PASS | :focus-visible zadržano |
+
+### SECTION 5: QA
+
+- **Mobile (360px)**: ✅ Grid responsive, nav toggle radi, korpa pristupačna
+- **Desktop (≥1080px)**: ✅ Nav centriran, hover animacije, footer 3 kolone
+- **Kontrast**: ✅ Footer AA compliant, nav hover dovoljan kontrast
+
+### SECTION 6: TODO
+
+- [ ] Animacija cart count broja (scale effect)
+- [ ] ARIA live region za add-to-cart poruke
+- [ ] Screen reader testing (NVDA/JAWS)
+- [ ] Performance audit finalnih izmjena
+
+**SPRINT REZULTAT: 11/11 PASS** - Mobile-first implementacija uspješna, kontrast AA postignuta, navigacija funkcionalna.
+
+---
+
 ## P10 - EMAIL HEADER/FOOTER BRAND + SCHEMA JSON-LD ✓
 
 **Status:** ZAVRŠENO ✓  

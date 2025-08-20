@@ -40,15 +40,13 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <nav id="site-navigation" class="main-navigation desktop-nav" aria-label="<?php esc_attr_e('Glavna navigacija', 'nutrilux'); ?>">
-                <?php
-                wp_nav_menu(array(
-                    'theme_location' => 'primary',
-                    'menu_class'     => 'nav-menu',
-                    'container'      => false,
-                    'fallback_cb'    => 'nutrilux_fallback_menu',
-                ));
-                ?>
+            <nav class="main-nav" aria-label="<?php esc_attr_e('Glavna navigacija', 'nutrilux'); ?>">
+                <ul class="nav-menu">
+                    <li><a href="<?php echo esc_url(home_url('/')); ?>" <?php echo is_front_page() ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Početna', 'nutrilux'); ?></a></li>
+                    <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" <?php echo (is_shop() || is_product_category() || is_product_tag()) ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Proizvodi', 'nutrilux'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/o-nama/')); ?>" <?php echo is_page('o-nama') ? 'aria-current="page"' : ''; ?>><?php esc_html_e('O nama', 'nutrilux'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/kontakt/')); ?>" <?php echo is_page('kontakt') ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Kontakt', 'nutrilux'); ?></a></li>
+                </ul>
             </nav>
 
             <!-- Header Actions & Mobile Toggle -->
@@ -56,10 +54,16 @@
                 
                 <!-- WooCommerce Cart (if active) -->
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-link">
-                        <span class="cart-icon" aria-hidden="true">🛒</span>
-                        <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
-                        <span class="visually-hidden"><?php esc_html_e('Korpa', 'nutrilux'); ?></span>
+                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo sprintf(esc_attr__('Korpa (%d proizvoda)', 'nutrilux'), WC()->cart->get_cart_contents_count()); ?>">
+                        <span class="cart-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
+                                <path d="M7 6h14l-1.5 9h-11z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M7 6L6 3H3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="10" cy="21" r="1.5" fill="white"/>
+                                <circle cx="17" cy="21" r="1.5" fill="white"/>
+                            </svg>
+                        </span>
+                        <span class="cart-count" data-cart-count><?php echo WC()->cart->get_cart_contents_count(); ?></span>
                     </a>
                 <?php endif; ?>
 
@@ -67,9 +71,9 @@
                 <button 
                     id="navToggle" 
                     class="nav-toggle" 
-                    aria-controls="primaryNav" 
+                    aria-controls="mobileNav" 
                     aria-expanded="false"
-                    aria-label="<?php esc_attr_e('Otvori glavni meni', 'nutrilux'); ?>"
+                    aria-label="<?php esc_attr_e('Otvori meni', 'nutrilux'); ?>"
                 >
                     <span class="nav-toggle-icon">
                         <span class="line"></span>
@@ -82,16 +86,14 @@
     </div>
 
     <!-- Mobile Navigation Panel -->
-    <nav id="primaryNav" class="nav-panel" aria-label="<?php esc_attr_e('Glavna navigacija', 'nutrilux'); ?>">
+    <nav id="mobileNav" class="nav-panel" aria-label="<?php esc_attr_e('Glavna navigacija', 'nutrilux'); ?>">
         <div class="nav-panel-content">
-            <?php
-            wp_nav_menu(array(
-                'theme_location' => 'primary',
-                'menu_class'     => 'nav-menu mobile-menu',
-                'container'      => false,
-                'fallback_cb'    => 'nutrilux_fallback_menu',
-            ));
-            ?>
+            <ul class="nav-menu mobile-menu">
+                <li><a href="<?php echo esc_url(home_url('/')); ?>" <?php echo is_front_page() ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Početna', 'nutrilux'); ?></a></li>
+                <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" <?php echo (is_shop() || is_product_category() || is_product_tag()) ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Proizvodi', 'nutrilux'); ?></a></li>
+                <li><a href="<?php echo esc_url(home_url('/o-nama/')); ?>" <?php echo is_page('o-nama') ? 'aria-current="page"' : ''; ?>><?php esc_html_e('O nama', 'nutrilux'); ?></a></li>
+                <li><a href="<?php echo esc_url(home_url('/kontakt/')); ?>" <?php echo is_page('kontakt') ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Kontakt', 'nutrilux'); ?></a></li>
+            </ul>
         </div>
     </nav>
 </header>
