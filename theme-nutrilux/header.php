@@ -52,8 +52,9 @@
                 <?php if (class_exists('WooCommerce')) : 
                     $count = WC()->cart->get_cart_contents_count();
                     $total = WC()->cart->get_cart_total();
+                    $total_raw = wp_strip_all_tags($total);
                 ?>
-                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo esc_attr( sprintf('Korpa (%d artikala – %s)', $count, wp_strip_all_tags($total) ) ); ?>">
+                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="cart-button" aria-label="<?php echo esc_attr(sprintf('Korpa (%d artikala – %s)', $count, $total_raw)); ?>">
                         <span class="cart-icon" aria-hidden="true">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
                                 <path d="M7 6h14l-1.5 9h-11z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
@@ -62,10 +63,8 @@
                                 <circle cx="17" cy="21" r="1.5" fill="white"/>
                             </svg>
                         </span>
-                        <span class="cart-meta">
-                            <span class="cart-count" data-cart-count><?php echo esc_html($count); ?></span>
-                            <span class="cart-total" data-cart-total><?php echo wp_kses_post($total); ?></span>
-                        </span>
+                        <span class="cart-total" data-cart-total><?php echo wp_kses_post($total); ?></span>
+                        <span class="cart-badge" data-cart-count><?php echo esc_html($count); ?></span>
                     </a>
                 <?php endif; ?>
 
@@ -89,6 +88,7 @@
 
     <!-- Mobile Navigation Panel -->
     <nav id="mobileNav" class="nav-panel" aria-label="<?php esc_attr_e('Glavna navigacija', 'nutrilux'); ?>">
+        <button type="button" class="nav-close" aria-label="<?php esc_attr_e('Zatvori meni', 'nutrilux'); ?>">✕</button>
         <div class="nav-panel-content">
             <ul class="nav-menu mobile-menu">
                 <li><a href="<?php echo esc_url(home_url('/')); ?>" <?php echo is_front_page() ? 'aria-current="page"' : ''; ?>><?php esc_html_e('Početna', 'nutrilux'); ?></a></li>

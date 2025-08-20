@@ -54,9 +54,6 @@
             </div>
         </div>
 
-        <!-- Footer Divider -->
-        <div class="footer-divider"></div>
-
         <!-- Footer Bottom -->
         <div class="footer-bottom">
             <div class="footer-copyright">

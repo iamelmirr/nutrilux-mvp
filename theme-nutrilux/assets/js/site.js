@@ -19,74 +19,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navigation Toggle Functionality
     const navToggle = document.getElementById('navToggle');
     const mobileNav = document.getElementById('mobileNav');
+    const navClose = document.querySelector('.nav-close');
     const body = document.body;
     
+    function openNav(){
+        mobileNav.classList.add('nav-panel--open');
+        navToggle.setAttribute('aria-expanded','true');
+        // Fokus trap start
+        setTimeout(()=>mobileNav.querySelector('a,button')?.focus(),50);
+        document.body.style.overflow='hidden';
+    }
+    
+    function closeNav(){
+        mobileNav.classList.remove('nav-panel--open');
+        navToggle.setAttribute('aria-expanded','false');
+        document.body.style.overflow='';
+    }
+    
     if (navToggle && mobileNav) {
-        
-        // Toggle navigation
-        function toggleNav() {
-            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
-            const newState = !isExpanded;
-            
-            // Update ARIA attributes
-            navToggle.setAttribute('aria-expanded', newState);
-            navToggle.setAttribute('aria-label', newState ? 'Zatvori meni' : 'Otvori meni');
-            
-            // Toggle classes
-            mobileNav.classList.toggle('nav-panel--open', newState);
-            body.classList.toggle('nav-open', newState);
-            
-            // Focus management
-            if (newState) {
-                // Focus first link in navigation when opened
-                const firstLink = mobileNav.querySelector('a');
-                if (firstLink) {
-                    firstLink.focus();
-                }
-                // Prevent body scroll
-                body.style.overflow = 'hidden';
-            } else {
-                // Return focus to toggle button when closed
-                navToggle.focus();
-                // Restore body scroll
-                body.style.overflow = '';
-            }
-        }
-        
-        // Close navigation
-        function closeNav() {
-            if (navToggle.getAttribute('aria-expanded') === 'true') {
-                toggleNav();
-            }
-        }
-        
-        // Toggle button click
-        navToggle.addEventListener('click', toggleNav);
-        
-        // Close on ESC key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                closeNav();
-            }
+        navToggle.addEventListener('click', () => {
+            (mobileNav.classList.contains('nav-panel--open')?closeNav():openNav());
         });
         
-        // Close when clicking navigation links
-        const navLinks = mobileNav.querySelectorAll('a');
-        navLinks.forEach(function(link) {
-            link.addEventListener('click', function() {
-                // Small delay to allow navigation to complete
-                setTimeout(closeNav, 100);
-            });
+        navClose?.addEventListener('click', closeNav);
+        
+        document.addEventListener('keydown', e=>{
+            if(e.key==='Escape' && mobileNav.classList.contains('nav-panel--open')) closeNav();
         });
         
-        // Close when clicking outside navigation (mobile)
-        document.addEventListener('click', function(e) {
-            const isClickInsideNav = mobileNav.contains(e.target);
-            const isClickOnToggle = navToggle.contains(e.target);
-            
-            if (!isClickInsideNav && !isClickOnToggle && mobileNav.classList.contains('nav-panel--open')) {
-                closeNav();
-            }
+        mobileNav.addEventListener('click', e=>{
+            if(e.target.matches('.mobile-menu a')) closeNav();
         });
         
         // Handle window resize - close mobile nav on desktop
@@ -206,6 +168,7 @@ if (typeof jQuery !== 'undefined') {
         if(!btn) return;
         const count = btn.querySelector('[data-cart-count]')?.textContent || '0';
         const total = btn.querySelector('[data-cart-total]')?.textContent.replace(/\s+/g,' ').trim() || '';
-        btn.setAttribute('aria-label', `Korpa (${count} artikala – ${total})`);
+        const totalRaw = total.replace(/<[^>]*>/g, ''); // Strip HTML tags
+        btn.setAttribute('aria-label', `Korpa (${count} artikala – ${totalRaw})`);
     });
 }

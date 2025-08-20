@@ -23,7 +23,7 @@
     </section>
 
     <!-- ===== PRODUCTS SECTION ===== -->
-    <section class="home-products">
+    <section class="home-products section">
         <div class="wrap">
             <h2><?php esc_html_e('Naši proizvodi', 'nutrilux'); ?></h2>
             <p class="section-intro"><?php esc_html_e('Kvalitetni proteinski sastojci i nutritivna rješenja za sve potrebe.', 'nutrilux'); ?></p>
@@ -59,8 +59,11 @@
         </div>
     </section>
 
+    <!-- Section Ramp -->
+    <div class="section-ramp"></div>
+
     <!-- ===== SPECIFICATIONS/BENEFITS SECTION ===== -->
-    <section class="specs">
+    <section class="specs section section--soft">
         <div class="wrap specs-inner">
             <h2 class="specs-title">Zašto odabrati Nutrilux?</h2>
             <div class="specs-grid">
@@ -88,8 +91,11 @@
         </div>
     </section>
 
+    <!-- Section Ramp Alt -->
+    <div class="section-ramp--alt"></div>
+
     <!-- ===== PROMO/QUOTE SECTION ===== -->
-    <section class="promo-block">
+    <section class="promo-block section--alt">
         <div class="wrap">
             <blockquote class="promo-quote">
                 <span class="promo-quote__icon" aria-hidden="true">"</span>
@@ -101,24 +107,24 @@
     </section>
 
     <!-- ===== CONTACT SECTION ===== -->
-    <section class="contact-section">
+    <section class="contact-section section">
         <div class="wrap contact-inner">
             <h2 class="contact-title">Kontaktirajte nas</h2>
             <p class="contact-desc">Pošaljite upit ili poruku – javit ćemo se brzo!</p>
             <form class="contact-form" autocomplete="off" novalidate>
-                <div class="form-group">
+                <div class="form-group" id="contact-name-group">
                     <label for="contact-name">Ime i prezime / Firma*</label>
                     <input type="text" id="contact-name" name="name" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="contact-biz-group">
                     <label for="contact-biz">Djelatnost / Svrha</label>
                     <input type="text" id="contact-biz" name="biz">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="contact-email-group">
                     <label for="contact-email">Email*</label>
                     <input type="email" id="contact-email" name="email" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group full" id="contact-message-group">
                     <label for="contact-message">Poruka*</label>
                     <textarea id="contact-message" name="message" rows="4" required></textarea>
                 </div>
