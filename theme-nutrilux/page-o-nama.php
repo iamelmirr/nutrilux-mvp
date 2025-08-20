@@ -11,20 +11,18 @@ get_header(); ?>
         <?php while (have_posts()) : the_post(); ?>
             
             <!-- Hero Section -->
-            <section class="about-hero">
-                <div class="container">
-                    <div class="about-hero-content">
-                        <h1 class="about-hero-title"><?php the_title(); ?></h1>
-                        <p class="about-hero-tagline">
-                            Prirodni proizvodi za modernu kuhinju i sportske potrebe
-                        </p>
-                    </div>
+            <section class="page-hero">
+                <div class="wrap page-hero__inner">
+                    <h1 class="page-hero__title"><?php the_title(); ?></h1>
+                    <p class="page-hero__desc">
+                        Prirodni proizvodi za modernu kuhinju i sportske potrebe
+                    </p>
                 </div>
             </section>
 
             <!-- Misija i Vizija Section -->
             <section class="about-mission-vision">
-                <div class="container">
+                <div class="wrap">
                     <div class="mission-vision-grid">
                         <div class="card mission-card">
                             <h2>Naša Misija</h2>
@@ -49,7 +47,7 @@ get_header(); ?>
 
             <!-- Vrijednosti Section -->
             <section class="about-values">
-                <div class="container">
+                <div class="wrap">
                     <h2 class="section-title">Naše Vrijednosti</h2>
                     <div class="values-grid">
                         <div class="card value-card">
@@ -93,7 +91,7 @@ get_header(); ?>
 
             <!-- Proces Section -->
             <section class="about-process">
-                <div class="container">
+                <div class="wrap">
                     <h2 class="section-title">Naš Proces</h2>
                     <div class="process-steps">
                         <div class="process-step">
@@ -134,7 +132,7 @@ get_header(); ?>
 
             <!-- CTA Section -->
             <section class="about-cta">
-                <div class="container">
+                <div class="wrap">
                     <div class="cta-content">
                         <h2>Imate pitanja o našim proizvodima?</h2>
                         <p>Kontaktirajte nas za sve informacije o proizvodima, narudžbama ili saradnji.</p>

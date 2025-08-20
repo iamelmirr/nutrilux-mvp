@@ -174,7 +174,7 @@ body.admin-bar { --admin-bar-offset:32px; }
 /* ========== HERO ========== */
 .page-hero {
   position:relative;
-  background:linear-gradient(180deg,var(--color-hero-start) 0%, var(--color-hero-mid) 35%, var(--color-hero-end) 100%);
+  background: linear-gradient(180deg, #F5C542 0%, #F9E597 50%, #FFFFFF 100%);
   padding:48px 0 40px;
   overflow:hidden;
 }
@@ -1869,4 +1869,41 @@ ul.products[class*="columns"] li.product {
 .p-card:focus-visible {
   outline: 2px solid rgba(245,197,66,.8);
   outline-offset: 4px;
+}
+
+/* ===== PAGE HERO (for O nama & Kontakt pages) ===== */
+.page-hero {
+  background: linear-gradient(180deg, #F5C542 0%, #F9E597 50%, #FFFFFF 100%);
+  padding: 56px 0 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero__title {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #1F2225;
+}
+
+.page-hero__desc {
+  margin: 0 auto 0;
+  max-width: 640px;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #31363B;
+}
+
+@media (min-width: 720px) {
+  .page-hero {
+    padding: 72px 0 48px;
+  }
+}
+
+@media (min-width: 1080px) {
+  .page-hero {
+    padding: 96px 0 56px;
+  }
 }

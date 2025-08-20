@@ -11,20 +11,18 @@ get_header(); ?>
         <?php while (have_posts()) : the_post(); ?>
             
             <!-- Hero Section -->
-            <section class="contact-hero">
-                <div class="container">
-                    <div class="contact-hero-content">
-                        <h1 class="contact-hero-title"><?php the_title(); ?></h1>
-                        <p class="contact-hero-tagline">
-                            Javite nam se za sva pitanja o proizvodima ili saradnji
-                        </p>
-                    </div>
+            <section class="page-hero">
+                <div class="wrap page-hero__inner">
+                    <h1 class="page-hero__title"><?php the_title(); ?></h1>
+                    <p class="page-hero__desc">
+                        Javite nam se za sva pitanja o proizvodima ili saradnji
+                    </p>
                 </div>
             </section>
 
             <!-- Contact Content -->
             <section class="contact-content">
-                <div class="container">
+                <div class="wrap">
                     <div class="contact-grid">
                         
                         <!-- Contact Form -->
