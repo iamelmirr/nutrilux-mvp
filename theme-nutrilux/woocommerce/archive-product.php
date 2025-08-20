@@ -7,13 +7,22 @@ get_header(); ?>
 
 <!-- Shop Hero Section -->
 <section class="shop-hero">
-    <div class="wrap">
-        <h1><?php esc_html_e('Naši proizvodi', 'nutrilux'); ?></h1>
-        <p><?php esc_html_e('Kvalitetni proteini na bazi jaja u prahu za industriju, pekare i restorane.', 'nutrilux'); ?></p>
-        <div class="shop-sorting">
-            <?php woocommerce_catalog_ordering(); ?>
-        </div>
-    </div>
+  <div class="wrap shop-hero__inner">
+    <h1 class="shop-hero__title">Naši proizvodi</h1>
+    <p class="shop-hero__desc">Kvalitetni proteini na bazi jaja u prahu za industriju, pekare i restorane.</p>
+    <form class="woocommerce-ordering shop-hero__ordering" method="get">
+      <?php 
+        // Održimo postojeće name="orderby" polje
+        woocommerce_catalog_ordering();
+        // Reproduciraj hidden polja (npr. paginacija)
+        foreach ( $_GET as $key => $val ) {
+          if ( in_array( $key, ['orderby','submit','paged'] ) ) continue;
+          if ( is_array($val) ) continue;
+          echo '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($val).'">';
+        }
+      ?>
+    </form>
+  </div>
 </section>
 
 <main id="main" class="site-main woocommerce-main">
@@ -21,11 +30,6 @@ get_header(); ?>
         
         <?php
         if (woocommerce_product_loop()) {
-
-            /**
-             * Hook: woocommerce_before_shop_loop
-             */
-            do_action('woocommerce_before_shop_loop');
 
             woocommerce_product_loop_start();
 

@@ -1723,3 +1723,150 @@ body.nav-contact-active .nav-menu a[href*="kontakt"]::after {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ========== SHOP REFINEMENT ========== */
+
+/* Shop Hero Section */
+.shop-hero {
+  background: linear-gradient(180deg, #F5C542 0%, #F9E597 50%, #FFFFFF 100%);
+  padding: 56px 0 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-hero__title {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #1F2225;
+}
+
+.shop-hero__desc {
+  margin: 0 auto 28px;
+  max-width: 640px;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #31363B;
+}
+
+.shop-hero__ordering {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px -4px rgba(0,0,0,.08);
+}
+
+.shop-hero__ordering select.orderby {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  padding: 4px 2px;
+  min-width: 170px;
+  cursor: pointer;
+  outline: none;
+}
+
+.shop-hero__ordering select.orderby:focus-visible {
+  outline: 2px solid rgba(245,197,66,.6);
+  border-radius: 6px;
+}
+
+@media (min-width: 720px) {
+  .shop-hero {
+    padding: 72px 0 48px;
+  }
+}
+
+@media (min-width: 1080px) {
+  .shop-hero {
+    padding: 96px 0 56px;
+  }
+}
+
+/* Products Grid */
+.products {
+  --card-gap: 32px;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  gap: var(--card-gap);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 720px) {
+  .products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .products {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Remove any pseudo-elements that might block first grid slot */
+.products::before {
+  content: none !important;
+  display: none !important;
+}
+
+.products .product {
+  margin: 0 !important;
+  float: none !important;
+  width: auto !important;
+}
+
+/* Remove WooCommerce default width forcing */
+ul.products[class*="columns"] li.product {
+  width: auto !important;
+}
+
+/* Shop Page Product Cards Actions Override */
+.woocommerce .products .p-card__actions .button,
+.woocommerce .products .p-card__actions .add_to_cart_button {
+  display: block;
+  width: 100%;
+  background: #F5C542;
+  color: #121212;
+  border: 0;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.2;
+  transition: background 0.25s, box-shadow 0.25s;
+  text-decoration: none;
+}
+
+.woocommerce .products .p-card__actions .button:hover,
+.woocommerce .products .p-card__actions .button:focus-visible,
+.woocommerce .products .p-card__actions .add_to_cart_button:hover,
+.woocommerce .products .p-card__actions .add_to_cart_button:focus-visible {
+  background: #E2B838;
+  color: #121212;
+}
+
+.woocommerce .products .p-card__actions .button:active,
+.woocommerce .products .p-card__actions .add_to_cart_button:active {
+  transform: translateY(1px);
+}
+
+/* Product Card Focus */
+.p-card:focus-visible {
+  outline: 2px solid rgba(245,197,66,.8);
+  outline-offset: 4px;
+}

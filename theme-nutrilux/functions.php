@@ -45,8 +45,11 @@ function nutrilux_theme_setup() {
         'style',
         'script',
     ));
+    
+    // SHOP REFINEMENT: Remove duplicate ordering from shop page
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
 }
-add_action('after_setup_theme', 'nutrilux_theme_setup');
+add_action('after_setup_theme', 'nutrilux_theme_setup', 20);
 
 /**
  * Include WooCommerce customizations
@@ -412,4 +415,42 @@ function nutrilux_footer_fallback_menu() {
     echo '<li><a href="' . esc_url(home_url('/kontakt/')) . '"' . $contact_active . '>' . esc_html__('Kontakt', 'nutrilux') . '</a></li>';
     
     echo '</ul>';
+}
+
+/**
+ * SHOP REFINEMENT: Shorten Add to Cart text
+ */
+add_filter('woocommerce_product_add_to_cart_text', 'nutrilux_short_add_to_cart');
+add_filter('woocommerce_product_single_add_to_cart_text', 'nutrilux_short_add_to_cart');
+function nutrilux_short_add_to_cart($text) {
+    return 'Dodaj u korpu';
+}
+
+/**
+ * SHOP REFINEMENT: Add to cart text cleanup via gettext
+ */
+add_filter('gettext', 'nutrilux_add_to_cart_cleanup', 10, 3);
+function nutrilux_add_to_cart_cleanup($translated, $text, $domain) {
+    $targets = [
+        'Dodaj %s u korpu',
+        'Dodaj "%s" u korpu',
+        'Add to cart',
+        'Add %s to cart',
+        'Add "%s" to your cart'
+    ];
+    if (in_array($text, $targets, true)) {
+        return 'Dodaj u korpu';
+    }
+    return $translated;
+}
+
+/**
+ * SHOP REFINEMENT: Translate shop texts
+ */
+add_filter('gettext', 'nutrilux_shop_texts', 10, 3);
+function nutrilux_shop_texts($translated, $text, $domain) {
+    if ($text === 'Showing all %d results') return 'Prikazano svih %d proizvoda';
+    if ($text === 'Showing the single result') return 'Prikazan 1 proizvod';
+    if ($text === 'Showing %1$d–%2$d of %3$d results') return 'Prikazano %1$d–%2$d od %3$d proizvoda';
+    return $translated;
 }
