@@ -304,9 +304,18 @@ function nutrilux_enqueue_assets() {
     
     // Enqueue WooCommerce CSS file (if WooCommerce is active)
     if (class_exists('WooCommerce')) {
+        // WooCommerce styles
         wp_enqueue_style(
             'nutrilux-woocommerce',
             get_template_directory_uri() . '/assets/css/woocommerce.css',
+            array('nutrilux-layout'),
+            $dev_version
+        );
+        
+        // Cart page styles - always load for consistency  
+        wp_enqueue_style(
+            'nutrilux-cart',
+            get_template_directory_uri() . '/assets/css/cart.css',
             array('nutrilux-layout'),
             $dev_version
         );
@@ -454,3 +463,127 @@ function nutrilux_shop_texts($translated, $text, $domain) {
     if ($text === 'Showing %1$d–%2$d of %3$d results') return 'Prikazano %1$d–%2$d od %3$d proizvoda';
     return $translated;
 }
+
+/* === CART REFINEMENT === */
+
+/**
+ * Force custom cart page template
+ */
+add_action('template_redirect', 'nutrilux_redirect_cart_page');
+function nutrilux_redirect_cart_page() {
+    if (is_cart()) {
+        // Force load our custom cart template
+        include get_template_directory() . '/page-cart.php';
+        exit;
+    }
+}
+
+/**
+ * Force WooCommerce template overrides
+ */
+add_filter('woocommerce_locate_template', 'nutrilux_woocommerce_locate_template', 10, 3);
+function nutrilux_woocommerce_locate_template($template, $template_name, $template_path) {
+    global $woocommerce;
+    
+    $_template = $template;
+    
+    if (!$template_path) {
+        $template_path = $woocommerce->template_url;
+    }
+    
+    $plugin_path = untrailingslashit(plugin_dir_path(__FILE__)) . '/woocommerce/';
+    $template_path = get_template_directory() . '/woocommerce/';
+    
+    // Look within passed path within the theme
+    if (file_exists($template_path . $template_name)) {
+        $template = $template_path . $template_name;
+    }
+    
+    // Debugging
+    if ($template_name === 'cart/cart.php') {
+        error_log('NUTRILUX: Looking for cart template: ' . $template);
+    }
+    
+    return $template;
+}
+
+/**
+ * Cart page localization to Bosnian
+ */
+add_filter('gettext', 'nutrilux_cart_texts', 10, 3);
+function nutrilux_cart_texts($translated, $original, $domain) {
+    // Debug - dodaj u console log da vidimo da li se poziva
+    if ($original === 'Cart') {
+        error_log('NUTRILUX DEBUG: Cart text translation triggered!');
+    }
+    
+    $map = [
+        'Cart' => 'Korpa',
+        'Product' => 'Proizvod',
+        'Products' => 'Proizvodi',
+        'Total' => 'Ukupno',
+        'Subtotal' => 'Međuzbroj',
+        'Proceed to checkout' => 'Nastavi na plaćanje',
+        'Update cart' => 'Ažuriraj korpu',
+        'Remove item' => 'Ukloni',
+        'Remove this item' => 'Ukloni ovu stavku',
+        'Coupon code' => 'Kupon',
+        'Apply coupon' => 'Primijeni kupon',
+        'Estimated total' => 'Ukupno',
+        'No products in the cart.' => 'Korpa je prazna.',
+        'Quantity' => 'Količina',
+        'Continue shopping' => 'Nastavi kupovinu',
+        'Your cart is currently empty.' => 'Vaša korpa je trenutno prazna.',
+        'Return to shop' => 'Povratak na trgovinu',
+        'Shipping' => 'Dostava',
+        'Tax' => 'Porez',
+        'Order total' => 'Ukupno za plaćanje'
+    ];
+    
+    if (isset($map[$original])) {
+        return $map[$original];
+    }
+    
+    return $translated;
+}
+
+/**
+ * Change checkout button text programmatically
+ */
+add_filter('woocommerce_proceed_to_checkout_text', function() { 
+    return 'Nastavi na plaćanje'; 
+});
+
+/**
+ * Change order button text for checkout
+ */
+add_filter('woocommerce_order_button_text', function() { 
+    return 'Potvrdi narudžbu'; 
+});
+
+/**
+ * Disable coupons completely
+ */
+add_filter('woocommerce_coupons_enabled', '__return_false');
+
+/**
+ * Remove coupon field from cart totals
+ */
+add_action('woocommerce_cart_coupon', function() {
+    remove_action('woocommerce_cart_coupon', 'woocommerce_cart_coupon');
+}, 5);
+
+/**
+ * Hide coupon-related cart actions
+ */
+add_action('wp_head', function() {
+    echo '<style>
+    .coupon, 
+    tr.cart-discount, 
+    tr.coupon,
+    .woocommerce-form-coupon-toggle,
+    .woocommerce-form-coupon {
+        display: none !important;
+    }
+    </style>';
+});

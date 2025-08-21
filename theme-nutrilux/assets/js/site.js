@@ -230,3 +230,72 @@ function showCartSuccessPopup(productName) {
         }, 300);
     }, 3000);
 }
+
+// Cart Quantity Controls Enhancement
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.quantity .plus, .quantity .minus');
+    if (!btn) return;
+    
+    const qtyInput = btn.parentElement.querySelector('.qty');
+    if (!qtyInput) return;
+    
+    let val = parseInt(qtyInput.value, 10) || 0;
+    
+    if (btn.classList.contains('plus')) {
+        val++;
+    } else if (btn.classList.contains('minus') && val > 1) {
+        val--;
+    }
+    
+    qtyInput.value = val;
+    
+    // Enable update cart button
+    const form = btn.closest('form.woocommerce-cart-form');
+    if (form) {
+        const updateBtn = form.querySelector('button[name="update_cart"]');
+        if (updateBtn) {
+            updateBtn.disabled = false;
+        }
+    }
+    
+    // Trigger change event for WooCommerce compatibility
+    qtyInput.dispatchEvent(new Event('change', { bubbles: true }));
+});
+
+// Cart Update Button State Management
+document.addEventListener('DOMContentLoaded', function() {
+    const cartForm = document.querySelector('form.woocommerce-cart-form');
+    if (!cartForm) return;
+    
+    const qtyInputs = cartForm.querySelectorAll('.qty');
+    const updateBtn = cartForm.querySelector('button[name="update_cart"]');
+    
+    if (!updateBtn) return;
+    
+    // Store initial values
+    const initialValues = {};
+    qtyInputs.forEach(function(input, index) {
+        initialValues[index] = input.value;
+    });
+    
+    // Monitor changes
+    qtyInputs.forEach(function(input, index) {
+        input.addEventListener('input', function() {
+            const hasChanges = Array.from(qtyInputs).some(function(inp, idx) {
+                return inp.value !== initialValues[idx];
+            });
+            
+            updateBtn.disabled = !hasChanges;
+            
+            if (hasChanges) {
+                updateBtn.style.background = '#F5C542';
+                updateBtn.style.color = '#121212';
+                updateBtn.style.borderColor = '#F5C542';
+            } else {
+                updateBtn.style.background = '';
+                updateBtn.style.color = '';
+                updateBtn.style.borderColor = '';
+            }
+        });
+    });
+});

@@ -1,0 +1,442 @@
+/* === CART REFINEMENT (mobile-first) === */
+.cart-title {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0 0 28px;
+  color: #1E2124;
+}
+
+.cart-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.woocommerce-cart-form {
+  width: 100%;
+}
+
+.shop_table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 24px;
+}
+
+.shop_table thead {
+  display: none; /* mobile */
+}
+
+.shop_table tbody tr {
+  background: #fff;
+  border: 1px solid #E8E2D8;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-template-areas:
+    "thumb info"
+    "thumb price";
+  padding: 16px 16px 14px;
+  position: relative;
+  gap: 12px 16px;
+}
+
+.shop_table tbody tr .product-thumbnail { 
+  grid-area: thumb; 
+}
+
+.shop_table tbody tr .product-name { 
+  grid-area: info; 
+  font-size: 0.95rem;
+}
+
+.shop_table tbody tr .product-subtotal { 
+  grid-area: price; 
+  align-self: end; 
+  font-weight: 600; 
+  font-size: 1.1rem;
+  color: #1E2124;
+}
+
+.shop_table tbody tr .product-price,
+.shop_table tbody tr .product-quantity,
+.shop_table tbody tr .product-remove {
+  display: none; /* Hidden on mobile, shown in desktop */
+}
+
+.product-thumbnail a,
+.product-thumbnail img { 
+  display: block; 
+  border-radius: 10px; 
+  background: #F3F1EC;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.product-name a {
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.product-name a:hover,
+.product-name a:focus-visible {
+  color: #F5C542;
+}
+
+.product-quantity,
+.product-remove,
+.product-price {
+  font-size: 0.85rem;
+}
+
+.product-quantity .quantity {
+  display: inline-flex;
+  align-items: center;
+  background: #F3F1EC;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #E2DCCC;
+  margin-top: 8px;
+}
+
+.product-quantity .qty {
+  width: 46px;
+  text-align: center;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  padding: 6px 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.quantity .minus,
+.quantity .plus {
+  background: transparent;
+  border: 0;
+  width: 34px;
+  height: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #222;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.quantity .minus:hover,
+.quantity .plus:hover,
+.quantity .minus:focus-visible,
+.quantity .plus:focus-visible {
+  background: #E8E2D8;
+  outline: none;
+}
+
+a.remove {
+  position: absolute;
+  top: 8px; 
+  right: 8px;
+  width: 28px; 
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #F3F1EC;
+  text-decoration: none;
+  font-weight: 700;
+  color: #1D1F1F !important;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: background 0.2s, color 0.2s;
+}
+
+a.remove:hover, 
+a.remove:focus-visible {
+  background: #E2B838;
+  color: #121212 !important;
+  outline: none;
+}
+
+.cart-actions-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+button[name="update_cart"] {
+  background: #fff;
+  color: #2A2E33;
+  border: 1px solid #D8D2C9;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s;
+  flex: 1;
+  min-width: 140px;
+}
+
+button[name="update_cart"]:hover,
+button[name="update_cart"]:focus-visible {
+  background: #FFF7E2;
+  border-color: #E2B838;
+  outline: none;
+}
+
+/* Totals */
+.cart-collaterals {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #E8E2D8;
+  border-radius: 16px;
+  padding: 28px 24px 32px;
+}
+
+.cart_totals h2 {
+  font-size: 1.2rem;
+  margin: 0 0 18px;
+  font-weight: 600;
+  color: #1F2225;
+}
+
+.cart_totals table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 24px;
+}
+
+.cart_totals table th,
+.cart_totals table td {
+  text-align: left;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #444;
+  border: 0;
+}
+
+.cart_totals table th { 
+  width: 45%; 
+  font-weight: 500; 
+  color: #555; 
+}
+
+.cart_totals .order-total td,
+.cart_totals .order-total th {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1E2124;
+  padding-top: 16px;
+  border-top: 1px solid #EDE8E0;
+}
+
+.wc-proceed-to-checkout {
+  margin-top: 8px;
+}
+
+.wc-proceed-to-checkout a.checkout-button {
+  display: block;
+  width: 100%;
+  background: #F5C542;
+  color: #121212;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 600;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: background 0.25s, box-shadow 0.25s;
+  box-shadow: 0 2px 10px -2px rgba(245, 197, 66, 0.25);
+  border: 0;
+}
+
+.wc-proceed-to-checkout a.checkout-button:hover,
+.wc-proceed-to-checkout a.checkout-button:focus-visible {
+  background: #E2B838;
+  box-shadow: 0 6px 24px -6px rgba(245, 197, 66, 0.45);
+  outline: none;
+}
+
+/* Empty cart styling */
+.woocommerce-info,
+.cart-empty {
+  background: #F9F7F2;
+  border: 1px solid #E8E2D8;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.return-to-shop {
+  margin-top: 20px;
+}
+
+.return-to-shop a {
+  display: inline-block;
+  background: #F5C542;
+  color: #121212;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+
+.return-to-shop a:hover,
+.return-to-shop a:focus-visible {
+  background: #E2B838;
+}
+
+/* Desktop layout adjustments */
+@media (min-width: 720px) {
+  .shop_table thead {
+    display: table-header-group;
+    background: transparent;
+  }
+  
+  .shop_table thead th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    padding: 0 0 8px;
+    color: #555;
+    border: 0;
+  }
+  
+  .shop_table tbody tr {
+    display: table-row;
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    position: static;
+    padding: 0;
+    grid-template-columns: none;
+    grid-template-areas: none;
+  }
+  
+  .shop_table tbody td {
+    vertical-align: middle;
+    padding: 18px 16px;
+    border-top: 1px solid #EEE5DA;
+    background: #fff;
+  }
+  
+  .shop_table tbody tr:first-child td { 
+    border-top: 0; 
+  }
+  
+  .shop_table tbody td.product-thumbnail {
+    width: 90px;
+  }
+  
+  .shop_table tbody td.product-subtotal {
+    text-align: right;
+    font-weight: 600;
+  }
+  
+  .shop_table tbody tr .product-price,
+  .shop_table tbody tr .product-quantity,
+  .shop_table tbody tr .product-remove {
+    display: table-cell;
+  }
+  
+  a.remove {
+    position: static;
+    width: 28px; 
+    height: 28px;
+    margin: 0 auto;
+  }
+  
+  .cart-actions-row {
+    justify-content: flex-start;
+  }
+  
+  button[name="update_cart"] {
+    flex: none;
+    min-width: 160px;
+  }
+}
+
+@media (min-width: 1080px) {
+  .cart-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .woocommerce-cart-form {
+    flex: 1 1 auto;
+  }
+  
+  .cart-collaterals {
+    position: sticky;
+    top: calc(var(--admin-bar-offset, 0px) + 90px);
+    width: 340px;
+    flex: 0 0 340px;
+  }
+}
+
+/* Focus states */
+.shop_table a:focus-visible,
+.shop_table button:focus-visible,
+.cart_totals a:focus-visible,
+.shop_table input:focus-visible {
+  outline: 2px solid rgba(245, 197, 66, 0.7);
+  outline-offset: 2px;
+}
+
+/* Remove coupon rows completely */
+tr.cart-discount,
+tr.coupon,
+.coupon,
+.woocommerce-form-coupon-toggle,
+.woocommerce-form-coupon { 
+  display: none !important; 
+}
+
+/* WooCommerce quantity input styling improvements */
+.woocommerce .quantity .qty {
+  width: 46px !important;
+  height: 34px;
+  text-align: center;
+  border: 0;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Hide default WooCommerce quantity +/- buttons if they exist */
+.woocommerce .quantity input[type="button"] {
+  display: none;
+}
+
+/* Responsive quantity controls for mobile */
+@media (max-width: 719px) {
+  .product-quantity {
+    grid-area: info;
+    margin-top: 8px;
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+  
+  .shop_table tbody tr {
+    grid-template-areas:
+      "thumb info"
+      "thumb price"
+      "quantity quantity";
+    grid-template-rows: auto auto auto;
+  }
+}

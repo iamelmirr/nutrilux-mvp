@@ -27,6 +27,9 @@ Main stylesheet importing base styles and design system.
 /* Import WooCommerce styles */
 @import url('./assets/css/woocommerce.css');
 
+/* Import cart styles */
+@import url('./assets/css/cart.css');
+
 /* Import single product styles */
 @import url('./assets/css/single-product.css');
 
