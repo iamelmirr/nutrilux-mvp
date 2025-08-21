@@ -1,3 +1,21 @@
+// Prevod WooCommerce stringova na single product page
+add_filter('gettext', function($translated, $text, $domain) {
+    if ($domain === 'woocommerce') {
+        switch ($text) {
+            case 'Add to cart':
+                return 'Dodaj u korpu';
+            case 'Description':
+                return 'Opis proizvoda';
+            case 'Additional information':
+                return 'Dodatne informacije';
+            case 'Reviews':
+                return 'Recenzije';
+            case 'Related products':
+                return 'Povezani proizvodi';
+        }
+    }
+    return $translated;
+}, 10, 3);
 <?php
 /**
  * Nutrilux Theme Functions
