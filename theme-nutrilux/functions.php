@@ -611,6 +611,19 @@ add_action('init', function() {
     }
 });
 
+// Hero background blend for homepage
+add_action('wp_head', function() {
+    if (is_front_page()) {
+        ?>
+        <style>
+        .hero, .homepage-hero, .site-hero {
+            background: linear-gradient(180deg, #FFFBE7 0%, #f8f9fa 100%) !important;
+        }
+        </style>
+        <?php
+    }
+});
+
 /**
  * Fallback menu for footer navigation
  */
@@ -819,6 +832,7 @@ add_action('wp_head', function() {
     ?>
     <style>
     /* Klasični WooCommerce popup */
+    .woocommerce-message.nutrilux-styled-message,
     .woocommerce-message {
         position: fixed !important;
         bottom: 20px !important;
@@ -917,6 +931,78 @@ add_action('wp_head', function() {
         setPopupText();
         autoHideAll();
     });
+    </script>
+    <?php
+});
+
+// Najtvrdokorniji JS za WooCommerce popup (klasični + block)
+add_action('wp_footer', function() {
+    ?>
+    <script>
+    setInterval(function() {
+        // Klasični WooCommerce popup
+        document.querySelectorAll('.woocommerce-message').forEach(function(el) {
+            el.innerHTML = 'Dodano u korpu';
+            el.style.position = 'fixed';
+            el.style.bottom = '20px';
+            el.style.left = '20px';
+            el.style.background = '#28a745';
+            el.style.color = '#fff';
+            el.style.borderRadius = '8px';
+            el.style.fontSize = '0.95rem';
+            el.style.fontWeight = '500';
+            el.style.boxShadow = '0 4px 12px rgba(40,167,69,0.3)';
+            el.style.zIndex = '9999';
+            el.style.maxWidth = '220px';
+            el.style.width = 'auto';
+            el.style.margin = '0';
+            el.style.padding = '14px 22px';
+            el.style.textAlign = 'center';
+            el.style.right = 'auto';
+            el.style.top = 'auto';
+            el.style.border = 'none';
+            el.style.display = '';
+            // Auto-hide
+            if (!el.classList.contains('nutrilux-hide')) {
+                el.classList.add('nutrilux-hide');
+                setTimeout(function() {
+                    el.style.opacity = 0;
+                    setTimeout(function() { el.remove(); }, 300);
+                }, 3000);
+            }
+        });
+        // Block-based WooCommerce popup
+        document.querySelectorAll('.wc-block-components-notice-banner.is-success').forEach(function(el) {
+            el.innerHTML = 'Dodano u korpu';
+            el.style.position = 'fixed';
+            el.style.bottom = '20px';
+            el.style.left = '20px';
+            el.style.background = '#28a745';
+            el.style.color = '#fff';
+            el.style.borderRadius = '8px';
+            el.style.fontSize = '0.95rem';
+            el.style.fontWeight = '500';
+            el.style.boxShadow = '0 4px 12px rgba(40,167,69,0.3)';
+            el.style.zIndex = '9999';
+            el.style.maxWidth = '220px';
+            el.style.width = 'auto';
+            el.style.margin = '0';
+            el.style.padding = '14px 22px';
+            el.style.textAlign = 'center';
+            el.style.right = 'auto';
+            el.style.top = 'auto';
+            el.style.border = 'none';
+            el.style.display = '';
+            // Auto-hide
+            if (!el.classList.contains('nutrilux-hide')) {
+                el.classList.add('nutrilux-hide');
+                setTimeout(function() {
+                    el.style.opacity = 0;
+                    setTimeout(function() { el.remove(); }, 300);
+                }, 3000);
+            }
+        });
+    }, 500);
     </script>
     <?php
 });
