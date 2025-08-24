@@ -596,4 +596,12 @@
   .prod-section {
     padding: var(--space-xl) 0;
   }
+  
+  .product-header {
+    margin-bottom: 0;
+  }
+  
+  .product-layout {
+    gap: var(--space-md);
+  }
 }
