@@ -12,6 +12,63 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Product meta helper functions
+ */
+function nutrilux_get_meta($product_id, $meta_key) {
+    return get_post_meta($product_id, $meta_key, true);
+}
+
+function nutrilux_get_multiline_meta($product_id, $meta_key) {
+    $value = get_post_meta($product_id, $meta_key, true);
+    if (empty($value)) {
+        return array();
+    }
+    
+    // Split by newlines and filter empty lines
+    $lines = explode("\n", $value);
+    $lines = array_map('trim', $lines);
+    $lines = array_filter($lines);
+    
+    return $lines;
+}
+
+function nutrilux_get_nutritional_info($product_id) {
+    return array(
+        'energy_kcal' => nutrilux_get_meta($product_id, '_nutri_energy_kcal'),
+        'protein_g' => nutrilux_get_meta($product_id, '_nutri_protein_g'),
+        'fat_g' => nutrilux_get_meta($product_id, '_nutri_fat_g'),
+        'carbs_g' => nutrilux_get_meta($product_id, '_nutri_carbs_g'),
+        'fiber_g' => nutrilux_get_meta($product_id, '_nutri_fiber_g'),
+        'vitamins' => nutrilux_get_meta($product_id, '_nutri_vitamins'),
+        'minerals' => nutrilux_get_meta($product_id, '_nutri_minerals')
+    );
+}
+
+function nutrilux_get_recipe_info($product_id) {
+    $ingredients = nutrilux_get_multiline_meta($product_id, '_nutri_recipe_ingredients');
+    $instructions = nutrilux_get_multiline_meta($product_id, '_nutri_recipe_instructions');
+    
+    return array(
+        'title' => nutrilux_get_meta($product_id, '_nutri_recipe_title'),
+        'ingredients' => $ingredients,
+        'instructions' => $instructions
+    );
+}
+
+function nutrilux_format_vitamins_minerals($value) {
+    if (empty($value)) {
+        return array();
+    }
+    
+    // Split by comma and clean up
+    $items = explode(',', $value);
+    $items = array_map('trim', $items);
+    $items = array_filter($items);
+    
+    return $items;
+}
+
+/**
  * Theme setup
  */
 function nutrilux_theme_setup() {
@@ -1158,3 +1215,229 @@ add_action('wp_head', function() {
         <?php
     }
 });
+
+/**
+ * Product Custom Fields - Admin Meta Boxes
+ */
+function nutrilux_add_product_meta_boxes() {
+    add_meta_box(
+        'nutrilux_product_details',
+        'Detalji Proizvoda',
+        'nutrilux_product_details_callback',
+        'product',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
+        'nutrilux_nutrition_facts',
+        'Nutritivne Vrijednosti',
+        'nutrilux_nutrition_facts_callback',
+        'product',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
+        'nutrilux_recipe_info',
+        'Recept',
+        'nutrilux_recipe_info_callback',
+        'product',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nutrilux_add_product_meta_boxes');
+
+function nutrilux_product_details_callback($post) {
+    wp_nonce_field('nutrilux_product_details_nonce', 'nutrilux_product_details_nonce');
+    
+    $ingredients = get_post_meta($post->ID, '_nutri_ingredients', true);
+    $shelf_life = get_post_meta($post->ID, '_nutri_shelf_life', true);
+    $rehydration = get_post_meta($post->ID, '_nutri_rehydration_ratio', true);
+    $serving = get_post_meta($post->ID, '_nutri_serving', true);
+    $storage = get_post_meta($post->ID, '_nutri_storage', true);
+    $benefits = get_post_meta($post->ID, '_nutri_benefits', true);
+    $usage = get_post_meta($post->ID, '_nutri_usage', true);
+    $formula_components = get_post_meta($post->ID, '_nutri_formula_components', true);
+    $marketing = get_post_meta($post->ID, '_nutri_marketing', true);
+    
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="nutri_ingredients">Sastojci</label></th>
+            <td><input type="text" id="nutri_ingredients" name="nutri_ingredients" value="<?php echo esc_attr($ingredients); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_shelf_life">Rok trajanja</label></th>
+            <td><input type="text" id="nutri_shelf_life" name="nutri_shelf_life" value="<?php echo esc_attr($shelf_life); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_rehydration_ratio">Rehidracija</label></th>
+            <td><input type="text" id="nutri_rehydration_ratio" name="nutri_rehydration_ratio" value="<?php echo esc_attr($rehydration); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_serving">Preporučena porcija</label></th>
+            <td><input type="text" id="nutri_serving" name="nutri_serving" value="<?php echo esc_attr($serving); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_storage">Čuvanje</label></th>
+            <td><input type="text" id="nutri_storage" name="nutri_storage" value="<?php echo esc_attr($storage); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_benefits">Prednosti (svaki red nova stavka)</label></th>
+            <td><textarea id="nutri_benefits" name="nutri_benefits" rows="5" class="large-text"><?php echo esc_textarea($benefits); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_usage">Upotreba (svaki red nova stavka)</label></th>
+            <td><textarea id="nutri_usage" name="nutri_usage" rows="5" class="large-text"><?php echo esc_textarea($usage); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_formula_components">Komponente formule (svaki red nova stavka)</label></th>
+            <td><textarea id="nutri_formula_components" name="nutri_formula_components" rows="5" class="large-text"><?php echo esc_textarea($formula_components); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_marketing">Marketing poruka</label></th>
+            <td><textarea id="nutri_marketing" name="nutri_marketing" rows="3" class="large-text"><?php echo esc_textarea($marketing); ?></textarea></td>
+        </tr>
+    </table>
+    <?php
+}
+
+function nutrilux_nutrition_facts_callback($post) {
+    wp_nonce_field('nutrilux_nutrition_facts_nonce', 'nutrilux_nutrition_facts_nonce');
+    
+    $energy_kcal = get_post_meta($post->ID, '_nutri_energy_kcal', true);
+    $protein_g = get_post_meta($post->ID, '_nutri_protein_g', true);
+    $fat_g = get_post_meta($post->ID, '_nutri_fat_g', true);
+    $carbs_g = get_post_meta($post->ID, '_nutri_carbs_g', true);
+    $fiber_g = get_post_meta($post->ID, '_nutri_fiber_g', true);
+    $vitamins = get_post_meta($post->ID, '_nutri_vitamins', true);
+    $minerals = get_post_meta($post->ID, '_nutri_minerals', true);
+    
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="nutri_energy_kcal">Energija (kcal na 100g)</label></th>
+            <td><input type="text" id="nutri_energy_kcal" name="nutri_energy_kcal" value="<?php echo esc_attr($energy_kcal); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_protein_g">Proteini (g na 100g)</label></th>
+            <td><input type="text" id="nutri_protein_g" name="nutri_protein_g" value="<?php echo esc_attr($protein_g); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_fat_g">Masti (g na 100g)</label></th>
+            <td><input type="text" id="nutri_fat_g" name="nutri_fat_g" value="<?php echo esc_attr($fat_g); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_carbs_g">Ugljikohidrati (g na 100g)</label></th>
+            <td><input type="text" id="nutri_carbs_g" name="nutri_carbs_g" value="<?php echo esc_attr($carbs_g); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_fiber_g">Vlakna (g na 100g)</label></th>
+            <td><input type="text" id="nutri_fiber_g" name="nutri_fiber_g" value="<?php echo esc_attr($fiber_g); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_vitamins">Vitamini (odvojeni zarezom)</label></th>
+            <td><input type="text" id="nutri_vitamins" name="nutri_vitamins" value="<?php echo esc_attr($vitamins); ?>" class="large-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_minerals">Minerali (odvojeni zarezom)</label></th>
+            <td><input type="text" id="nutri_minerals" name="nutri_minerals" value="<?php echo esc_attr($minerals); ?>" class="large-text" /></td>
+        </tr>
+    </table>
+    <?php
+}
+
+function nutrilux_recipe_info_callback($post) {
+    wp_nonce_field('nutrilux_recipe_info_nonce', 'nutrilux_recipe_info_nonce');
+    
+    $recipe_title = get_post_meta($post->ID, '_nutri_recipe_title', true);
+    $recipe_ingredients = get_post_meta($post->ID, '_nutri_recipe_ingredients', true);
+    $recipe_instructions = get_post_meta($post->ID, '_nutri_recipe_instructions', true);
+    
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="nutri_recipe_title">Naziv recepta</label></th>
+            <td><input type="text" id="nutri_recipe_title" name="nutri_recipe_title" value="<?php echo esc_attr($recipe_title); ?>" class="large-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_recipe_ingredients">Sastojci (svaki red nova stavka)</label></th>
+            <td><textarea id="nutri_recipe_ingredients" name="nutri_recipe_ingredients" rows="8" class="large-text"><?php echo esc_textarea($recipe_ingredients); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="nutri_recipe_instructions">Instrukcije (svaki red novi korak)</label></th>
+            <td><textarea id="nutri_recipe_instructions" name="nutri_recipe_instructions" rows="8" class="large-text"><?php echo esc_textarea($recipe_instructions); ?></textarea></td>
+        </tr>
+    </table>
+    <?php
+}
+
+function nutrilux_save_product_meta($post_id) {
+    // Check nonce
+    if (!isset($_POST['nutrilux_product_details_nonce']) || 
+        !wp_verify_nonce($_POST['nutrilux_product_details_nonce'], 'nutrilux_product_details_nonce')) {
+        return;
+    }
+    
+    // Check if it's an autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    // Check user permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    // Save product details
+    $product_fields = array(
+        'nutri_ingredients' => '_nutri_ingredients',
+        'nutri_shelf_life' => '_nutri_shelf_life',
+        'nutri_rehydration_ratio' => '_nutri_rehydration_ratio',
+        'nutri_serving' => '_nutri_serving',
+        'nutri_storage' => '_nutri_storage',
+        'nutri_benefits' => '_nutri_benefits',
+        'nutri_usage' => '_nutri_usage',
+        'nutri_formula_components' => '_nutri_formula_components',
+        'nutri_marketing' => '_nutri_marketing'
+    );
+    
+    foreach ($product_fields as $field => $meta_key) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $meta_key, sanitize_textarea_field($_POST[$field]));
+        }
+    }
+    
+    // Save nutrition facts
+    $nutrition_fields = array(
+        'nutri_energy_kcal' => '_nutri_energy_kcal',
+        'nutri_protein_g' => '_nutri_protein_g',
+        'nutri_fat_g' => '_nutri_fat_g',
+        'nutri_carbs_g' => '_nutri_carbs_g',
+        'nutri_fiber_g' => '_nutri_fiber_g',
+        'nutri_vitamins' => '_nutri_vitamins',
+        'nutri_minerals' => '_nutri_minerals'
+    );
+    
+    foreach ($nutrition_fields as $field => $meta_key) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $meta_key, sanitize_text_field($_POST[$field]));
+        }
+    }
+    
+    // Save recipe info
+    $recipe_fields = array(
+        'nutri_recipe_title' => '_nutri_recipe_title',
+        'nutri_recipe_ingredients' => '_nutri_recipe_ingredients',
+        'nutri_recipe_instructions' => '_nutri_recipe_instructions'
+    );
+    
+    foreach ($recipe_fields as $field => $meta_key) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $meta_key, sanitize_textarea_field($_POST[$field]));
+        }
+    }
+}
+add_action('save_post', 'nutrilux_save_product_meta');
