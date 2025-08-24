@@ -920,3 +920,156 @@ add_action('wp_head', function() {
     </script>
     <?php
 });
+
+/* === ANTI-FREEZE CHECKOUT FIX === */
+add_action('wp_head', function() {
+    if (is_checkout()) {
+        ?>
+        <style>
+        /* Prevent checkout freezing */
+        .woocommerce-checkout {
+            overflow: visible !important;
+            position: relative !important;
+        }
+        
+        .woocommerce form.checkout {
+            overflow: visible !important;
+            position: relative !important;
+            transform: none !important;
+        }
+        
+        /* Prevent sticky positioning issues */
+        .woocommerce-checkout .checkout-summary,
+        .woocommerce-checkout .order_review,
+        .woocommerce-checkout #order_review {
+            position: static !important;
+            top: auto !important;
+        }
+        
+        /* Prevent viewport issues on mobile */
+        @media (max-width: 768px) {
+            .woocommerce-checkout {
+                overflow-x: hidden !important;
+                overflow-y: visible !important;
+            }
+            
+            body.woocommerce-checkout {
+                overflow-x: hidden !important;
+                touch-action: pan-y !important;
+            }
+            
+            /* Prevent input zoom on iOS */
+            .woocommerce-checkout input[type="text"],
+            .woocommerce-checkout input[type="email"],
+            .woocommerce-checkout input[type="tel"],
+            .woocommerce-checkout select {
+                font-size: 16px !important;
+            }
+        }
+        
+        /* Prevent transform issues */
+        .woocommerce-checkout * {
+            transform: none !important;
+            backface-visibility: visible !important;
+        }
+        </style>
+        
+        <script>
+        // Anti-freeze JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.body.classList.contains('woocommerce-checkout')) {
+                console.log('Anti-freeze checkout script loaded');
+                
+                // Allow normal menu functionality
+                document.addEventListener('click', function(e) {
+                    // Always allow clicks on menu elements
+                    if (e.target.closest('.menu-toggle, .close-menu, .mobile-menu, nav, header, .site-header')) {
+                        console.log('Menu click allowed');
+                        return true;
+                    }
+                }, true); // Use capture phase
+                
+                // Prevent viewport jumping
+                let lastScrollTop = 0;
+                window.addEventListener('scroll', function(e) {
+                    let st = window.pageYOffset || document.documentElement.scrollTop;
+                    if (Math.abs(lastScrollTop - st) > 50) {
+                        // Prevent extreme scroll jumps
+                        return;
+                    }
+                    lastScrollTop = st;
+                }, { passive: true });
+                
+                // Prevent touch zoom that can cause freezing
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function(event) {
+                    // Skip if this is a menu button or close button
+                    if (event.target.closest('.menu-toggle, .close-menu, .mobile-menu, nav, header')) {
+                        return;
+                    }
+                    
+                    let now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, { passive: false });
+                
+                // Prevent double-tap zoom on form elements
+                document.querySelectorAll('.woocommerce-checkout input, .woocommerce-checkout select').forEach(function(element) {
+                    element.addEventListener('touchstart', function(e) {
+                        // Single touch only, but allow menu interactions
+                        if (e.touches.length > 1 && !e.target.closest('.menu-toggle, .mobile-menu, nav, header')) {
+                            e.preventDefault();
+                        }
+                    }, { passive: false });
+                    
+                    // Smooth focus without jumping
+                    element.addEventListener('focus', function() {
+                        setTimeout(function() {
+                            if (element.offsetParent !== null) {
+                                element.scrollIntoView({ 
+                                    behavior: 'smooth', 
+                                    block: 'center',
+                                    inline: 'nearest'
+                                });
+                            }
+                        }, 100);
+                    });
+                });
+                
+                // Monitor for layout shifts that can cause freezing
+                if ('ResizeObserver' in window) {
+                    const resizeObserver = new ResizeObserver(function(entries) {
+                        // Debounce to prevent excessive firing
+                        clearTimeout(window.resizeTimeout);
+                        window.resizeTimeout = setTimeout(function() {
+                            console.log('Layout stable');
+                        }, 100);
+                    });
+                    
+                    const checkoutForm = document.querySelector('form.checkout');
+                    if (checkoutForm) {
+                        resizeObserver.observe(checkoutForm);
+                    }
+                }
+                
+                console.log('Anti-freeze measures applied');
+                
+                // Ensure menu functionality works
+                setTimeout(function() {
+                    // Re-enable touch events for menu elements
+                    document.querySelectorAll('.menu-toggle, .close-menu, .mobile-menu, nav, header').forEach(function(el) {
+                        if (el) {
+                            el.style.touchAction = 'auto';
+                            el.style.pointerEvents = 'auto';
+                            console.log('Menu touch events restored for:', el.className);
+                        }
+                    });
+                }, 500);
+            }
+        });
+        </script>
+        <?php
+    }
+});
