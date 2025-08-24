@@ -125,6 +125,32 @@ add_action('wp_head', function() {
             border-radius: 16px;
             padding: 24px;
         }
+        
+        /* Mobile specific checkout summary improvements */
+        @media (max-width: 768px) {
+            .checkout-summary {
+                margin-top: 32px;
+                padding: 20px 18px 24px;
+                border-radius: 12px;
+            }
+            
+            .checkout-summary .section-heading {
+                font-size: 1rem;
+                margin-bottom: 16px;
+            }
+            
+            .woocommerce-checkout-review-order-table th,
+            .woocommerce-checkout-review-order-table td {
+                padding: 8px 0;
+                font-size: 0.9rem;
+            }
+            
+            .order-total th,
+            .order-total td {
+                font-size: 1rem;
+                padding: 12px 0;
+            }
+        }
         .woocommerce-checkout input.input-text,
         .woocommerce-checkout select {
             width: 100%;
@@ -246,7 +272,7 @@ add_filter('woocommerce_checkout_fields', function($fields) {
     unset($fields['billing']['billing_address_2']);
     unset($fields['billing']['billing_state']);
     
-    // Poštanski broj neobavezan
+    // Poštanski broj neobavezan (ovo je za standardni checkout, custom override-ujemo iznad)
     if(isset($fields['billing']['billing_postcode'])) {
         $fields['billing']['billing_postcode']['required'] = false;
         $fields['billing']['billing_postcode']['label'] = 'Poštanski broj (opcionalno)';
@@ -305,6 +331,37 @@ add_filter('woocommerce_checkout_fields', function($fields) {
     }
     
     return $fields;
+});
+
+/* === Ukloni default email na checkout - multiple approaches === */
+add_filter('woocommerce_checkout_get_value', function($value, $field) {
+    if ($field === 'billing_email' && $value === 'dev-email@wpengine.local') {
+        return '';
+    }
+    return $value;
+}, 10, 2);
+
+// Dodatni filter za default billing email
+add_filter('default_option_woocommerce_default_customer_address', function($value) {
+    if (is_array($value) && isset($value['billing_email'])) {
+        $value['billing_email'] = '';
+    }
+    return $value;
+});
+
+// Force override bilo kojeg default email-a
+add_action('wp_head', function() {
+    if (is_checkout()) {
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailField = document.getElementById('billing_email');
+            if (emailField && emailField.value === 'dev-email@wpengine.local') {
+                emailField.value = '';
+                console.log('Default email cleared via JavaScript');
+            }
+        });
+        </script>";
+    }
 });
 
 /* === CHECKOUT: Only COD (Cash on Delivery) === */
@@ -442,7 +499,13 @@ function nutrilux_custom_billing_fields() {
         
         <p class="form-row form-row-wide validate-required validate-email">
             <label for="billing_email">Email <abbr class="required" title="required">*</abbr></label>
-            <input type="email" class="input-text" name="billing_email" id="billing_email" placeholder="vasa.adresa@email.com" value="<?php echo esc_attr($checkout->get_value('billing_email')); ?>" required />
+            <input type="email" class="input-text" name="billing_email" id="billing_email" placeholder="vasa.adresa@email.com" value="<?php 
+                $email_value = $checkout->get_value('billing_email');
+                if ($email_value === 'dev-email@wpengine.local') {
+                    $email_value = '';
+                }
+                echo esc_attr($email_value); 
+            ?>" required />
         </p>
         
         <p class="form-row form-row-wide validate-required validate-phone">
@@ -460,9 +523,9 @@ function nutrilux_custom_billing_fields() {
             <input type="text" class="input-text" name="billing_city" id="billing_city" placeholder="Vaš grad" value="<?php echo esc_attr($checkout->get_value('billing_city')); ?>" required />
         </p>
         
-        <p class="form-row form-row-last">
-            <label for="billing_postcode">Poštanski broj (opcionalno)</label>
-            <input type="text" class="input-text" name="billing_postcode" id="billing_postcode" placeholder="71000" value="<?php echo esc_attr($checkout->get_value('billing_postcode')); ?>" />
+        <p class="form-row form-row-last validate-required">
+            <label for="billing_postcode">Poštanski broj <abbr class="required" title="required">*</abbr></label>
+            <input type="text" class="input-text" name="billing_postcode" id="billing_postcode" placeholder="71000" value="<?php echo esc_attr($checkout->get_value('billing_postcode')); ?>" required />
         </p>
         
         <input type="hidden" name="billing_country" value="BA" />
