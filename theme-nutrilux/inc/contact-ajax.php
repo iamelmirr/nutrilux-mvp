@@ -13,15 +13,29 @@ if (!defined('ABSPATH')) {
  * Handle contact form submission (logged in users)
  */
 function nutrilux_handle_contact_form() {
+    // Check if this is an AJAX request
+    if (!wp_doing_ajax()) {
+        wp_die('Direct access not allowed');
+    }
+    
+    // Debug log
+    error_log('Nutrilux Contact Form: Handler called');
+    error_log('POST data: ' . print_r($_POST, true));
+    
     // Verify nonce
-    if (!wp_verify_nonce($_POST['contact_nonce'], 'nutrilux_contact')) {
+    $nonce = isset($_POST['contact_nonce']) ? $_POST['contact_nonce'] : '';
+    if (!wp_verify_nonce($nonce, 'nutrilux_contact')) {
+        error_log('Nutrilux Contact Form: Nonce verification failed');
         wp_send_json_error('Sigurnosna provjera neuspješna. Molimo osvježite stranicu i pokušajte ponovo.');
+        return;
     }
     
     // Sanitize and validate input
-    $name = sanitize_text_field($_POST['contact_name']);
-    $email = sanitize_email($_POST['contact_email']);
-    $message = sanitize_textarea_field($_POST['contact_message']);
+    $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
+    $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
+    $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
+    
+    error_log('Nutrilux Contact Form: Data - Name: ' . $name . ', Email: ' . $email);
     
     // Validation
     $errors = array();
@@ -43,7 +57,7 @@ function nutrilux_handle_contact_form() {
     }
     
     // Prepare email
-    $to = get_option('admin_email'); // Send to site admin
+    $to = nutrilux_get_contact_email(); // Use configured email instead of admin_email
     $subject = 'Nova poruka sa Nutrilux kontakt forme';
     
     $email_message = "Nova poruka sa kontakt forme:\n\n";

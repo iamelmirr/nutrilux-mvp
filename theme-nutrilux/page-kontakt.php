@@ -250,24 +250,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         formData.append('action', 'nutrilux_contact');
         
+        // Debug log
+        console.log('Kontakt page - Sending form data:', Array.from(formData.entries()));
+        
         // Send AJAX request
         fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Hide form and show success message
-                form.style.display = 'none';
-                successMessage.style.display = 'block';
-                statusRegion.textContent = 'Poruka je uspešno poslana!';
-            } else {
-                statusRegion.textContent = 'Greška: ' + (data.data || 'Došlo je do greške prilikom slanja poruke.');
-                alert('Greška: ' + (data.data || 'Došlo je do greške prilikom slanja poruke.'));
+        .then(response => {
+            console.log('Kontakt page - Response status:', response.status);
+            return response.text(); // First get as text to see raw response
+        })
+        .then(text => {
+            console.log('Kontakt page - Raw response:', text);
+            try {
+                const data = JSON.parse(text);
+                if (data.success) {
+                    // Hide form and show success message
+                    form.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    statusRegion.textContent = 'Poruka je uspešno poslana!';
+                } else {
+                    statusRegion.textContent = 'Greška: ' + (data.data || 'Došlo je do greške prilikom slanja poruke.');
+                    alert('Greška: ' + (data.data || 'Došlo je do greške prilikom slanja poruke.'));
+                }
+            } catch (e) {
+                console.error('Kontakt page - JSON parse error:', e);
+                statusRegion.textContent = 'Server je vratio neispravnu odpoveđ';
+                alert('Server je vratio neispravnu odpoveđ: ' + text);
             }
         })
         .catch(error => {
+            console.error('Kontakt page - Fetch error:', error);
             console.error('Error:', error);
             statusRegion.textContent = 'Došlo je do greške prilikom slanja poruke.';
             alert('Došlo je do greške prilikom slanja poruke. Molimo pokušajte ponovo.');

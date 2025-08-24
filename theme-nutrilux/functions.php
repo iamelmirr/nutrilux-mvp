@@ -11,6 +11,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Include contact AJAX handler
+require_once get_template_directory() . '/inc/contact-ajax.php';
+
 /**
  * Product meta helper functions
  */
@@ -1441,3 +1444,224 @@ function nutrilux_save_product_meta($post_id) {
     }
 }
 add_action('save_post', 'nutrilux_save_product_meta');
+
+/**
+ * ===========================================
+ * NUTRILUX EMAIL SETTINGS
+ * ===========================================
+ */
+
+/**
+ * Add email settings to admin menu
+ */
+function nutrilux_email_settings_menu() {
+    add_options_page(
+        'Nutrilux Email Settings',
+        'Nutrilux Emails',
+        'manage_options',
+        'nutrilux-email-settings',
+        'nutrilux_email_settings_page'
+    );
+}
+add_action('admin_menu', 'nutrilux_email_settings_menu');
+
+/**
+ * Initialize email settings
+ */
+function nutrilux_email_settings_init() {
+    register_setting('nutrilux_email_settings', 'nutrilux_contact_email');
+    register_setting('nutrilux_email_settings', 'nutrilux_order_email');
+    
+    add_settings_section(
+        'nutrilux_email_section',
+        'Email konfiguracija',
+        'nutrilux_email_section_callback',
+        'nutrilux_email_settings'
+    );
+    
+    add_settings_field(
+        'nutrilux_contact_email',
+        'Email za kontakt forme',
+        'nutrilux_contact_email_callback',
+        'nutrilux_email_settings',
+        'nutrilux_email_section'
+    );
+    
+    add_settings_field(
+        'nutrilux_order_email',
+        'Email za narudžbe',
+        'nutrilux_order_email_callback',
+        'nutrilux_email_settings',
+        'nutrilux_email_section'
+    );
+}
+add_action('admin_init', 'nutrilux_email_settings_init');
+
+/**
+ * Email settings section callback
+ */
+function nutrilux_email_section_callback() {
+    echo '<p>Konfigurišite email adrese za različite tipove poruka.</p>';
+}
+
+/**
+ * Contact email field callback
+ */
+function nutrilux_contact_email_callback() {
+    $value = get_option('nutrilux_contact_email', '90minutesenjoy@gmail.com');
+    echo '<input type="email" name="nutrilux_contact_email" value="' . esc_attr($value) . '" class="regular-text" />';
+    echo '<p class="description">Email adresa na koju će stizati poruke sa kontakt forme.</p>';
+}
+
+/**
+ * Order email field callback
+ */
+function nutrilux_order_email_callback() {
+    $value = get_option('nutrilux_order_email', '90minutesenjoy@gmail.com');
+    echo '<input type="email" name="nutrilux_order_email" value="' . esc_attr($value) . '" class="regular-text" />';
+    echo '<p class="description">Email adresa na koju će stizati obaveštenja o narudžbama.</p>';
+}
+
+/**
+ * Email settings page
+ */
+function nutrilux_email_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>Nutrilux Email Settings</h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields('nutrilux_email_settings');
+            do_settings_sections('nutrilux_email_settings');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
+ * Get contact email for forms
+ */
+function nutrilux_get_contact_email() {
+    return get_option('nutrilux_contact_email', '90minutesenjoy@gmail.com');
+}
+
+/**
+ * Get order email for notifications
+ */
+function nutrilux_get_order_email() {
+    return get_option('nutrilux_order_email', '90minutesenjoy@gmail.com');
+}
+
+/**
+ * ===========================================
+ * WOOCOMMERCE ORDER EMAIL NOTIFICATIONS
+ * ===========================================
+ */
+
+/**
+ * Send custom order notification email
+ */
+function nutrilux_send_order_notification($order_id) {
+    $order = wc_get_order($order_id);
+    if (!$order) return;
+    
+    $to = nutrilux_get_order_email();
+    $subject = 'Nova narudžba #' . $order->get_order_number() . ' - Nutrilux';
+    
+    // Get order details
+    $order_date = $order->get_date_created()->format('d.m.Y H:i');
+    $order_total = $order->get_formatted_order_total();
+    $billing_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+    $billing_email = $order->get_billing_email();
+    $billing_phone = $order->get_billing_phone();
+    $billing_address = $order->get_formatted_billing_address();
+    $payment_method = $order->get_payment_method_title();
+    $order_status = wc_get_order_status_name($order->get_status());
+    
+    // Build email message
+    $message = "Nova narudžba je zaprimljena na Nutrilux sajtu!\n\n";
+    $message .= "DETALJI NARUDŽBE:\n";
+    $message .= "========================\n";
+    $message .= "Broj narudžbe: #" . $order->get_order_number() . "\n";
+    $message .= "Datum: " . $order_date . "\n";
+    $message .= "Status: " . $order_status . "\n";
+    $message .= "Ukupno: " . $order_total . "\n";
+    $message .= "Način plaćanja: " . $payment_method . "\n\n";
+    
+    $message .= "PODACI O KUPCU:\n";
+    $message .= "========================\n";
+    $message .= "Ime: " . $billing_name . "\n";
+    $message .= "Email: " . $billing_email . "\n";
+    $message .= "Telefon: " . $billing_phone . "\n";
+    $message .= "Adresa:\n" . strip_tags($billing_address) . "\n\n";
+    
+    $message .= "NARUČENI PROIZVODI:\n";
+    $message .= "========================\n";
+    
+    foreach ($order->get_items() as $item_id => $item) {
+        $product = $item->get_product();
+        $product_name = $item->get_name();
+        $quantity = $item->get_quantity();
+        $subtotal = $order->get_formatted_line_subtotal($item);
+        
+        $message .= "• " . $product_name . "\n";
+        $message .= "  Količina: " . $quantity . "\n";
+        $message .= "  Cijena: " . $subtotal . "\n\n";
+    }
+    
+    // Add order notes if any
+    $order_notes = $order->get_customer_note();
+    if (!empty($order_notes)) {
+        $message .= "NAPOMENE KUPCA:\n";
+        $message .= "========================\n";
+        $message .= $order_notes . "\n\n";
+    }
+    
+    $message .= "========================\n";
+    $message .= "Za pregled kompletnih detalja idite na:\n";
+    $message .= admin_url('post.php?post=' . $order_id . '&action=edit') . "\n\n";
+    $message .= "Ova poruka je automatski generisana sa " . home_url();
+    
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: Nutrilux <' . get_option('admin_email') . '>',
+        'Reply-To: ' . $billing_name . ' <' . $billing_email . '>'
+    );
+    
+    // Send email
+    $mail_sent = wp_mail($to, $subject, $message, $headers);
+    
+    if ($mail_sent) {
+        error_log(sprintf(
+            'Nutrilux Order Notification: Order #%s notification sent to %s',
+            $order->get_order_number(),
+            $to
+        ));
+    } else {
+        error_log('Nutrilux Order Notification: Failed to send order notification for order #' . $order->get_order_number());
+    }
+}
+
+/**
+ * Hook into WooCommerce order status changes
+ */
+function nutrilux_order_status_changed($order_id, $old_status, $new_status) {
+    // Send notification for new orders (when status changes to processing or completed)
+    if (in_array($new_status, array('processing', 'on-hold', 'completed'))) {
+        nutrilux_send_order_notification($order_id);
+    }
+}
+add_action('woocommerce_order_status_changed', 'nutrilux_order_status_changed', 10, 3);
+
+/**
+ * Also send notification when order is created (for immediate payment methods)
+ */
+function nutrilux_new_order_notification($order_id) {
+    $order = wc_get_order($order_id);
+    if ($order && $order->get_status() === 'processing') {
+        nutrilux_send_order_notification($order_id);
+    }
+}
+add_action('woocommerce_checkout_order_processed', 'nutrilux_new_order_notification', 10, 1);

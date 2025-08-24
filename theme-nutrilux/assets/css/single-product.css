@@ -135,15 +135,12 @@
 .product-add-to-cart .cart {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: 0; /* uklonjen gap jer quantity nije vidljiv */
   align-items: stretch;
 }
 
 .product-add-to-cart .quantity {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  display: none !important; /* Sakrij quantity selector */
 }
 
 .product-add-to-cart .quantity input {
@@ -218,7 +215,7 @@
 .product-cta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm); /* još manji gap */
+  gap: var(--space-xs); /* smanjen gap između cene i dugmeta */
   margin-top: var(--space-sm);
   padding: var(--space-sm); /* minimalan padding */
   background: rgba(245, 197, 66, 0.02); /* skoro nevidljiva pozadina */
@@ -231,7 +228,7 @@
   .product-cta { 
     display: flex; 
     align-items: center; 
-    gap: var(--space-md); /* umjeren gap */
+    gap: var(--space-sm); /* smanjen gap na desktopu */
     flex-wrap: nowrap;
     padding: var(--space-sm) var(--space-md); /* minimalan padding */
     margin-top: var(--space-xs); /* manji margin */

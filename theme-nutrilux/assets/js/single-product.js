@@ -4,9 +4,22 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Set default quantity to 1 when quantity selector is hidden
+    setDefaultQuantity();
+    
     // Simple add to cart enhancement
     enhanceAddToCart();
 });
+
+/**
+ * Set default quantity to 1 for hidden quantity selector
+ */
+function setDefaultQuantity() {
+    const quantityInput = document.querySelector('.product-add-to-cart .quantity input[name="quantity"]');
+    if (quantityInput) {
+        quantityInput.value = 1;
+    }
+}
 
 /**
  * Enhanced Add to Cart functionality
@@ -16,6 +29,12 @@ function enhanceAddToCart() {
     if (!addToCartButton) return;
     
     addToCartButton.addEventListener('click', function(e) {
+        // Ensure quantity is set to 1 before submitting
+        const quantityInput = document.querySelector('.product-add-to-cart .quantity input[name="quantity"]');
+        if (quantityInput) {
+            quantityInput.value = 1;
+        }
+        
         // Add loading state
         const originalText = this.textContent;
         this.textContent = 'Dodajem u korpu...';
