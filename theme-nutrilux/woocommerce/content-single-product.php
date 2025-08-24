@@ -39,7 +39,9 @@ global $product;
                         <?php echo $product->get_price_html(); ?>
                     </div>
                     <div class="product-add-to-cart">
-                        <?php woocommerce_template_single_add_to_cart(); ?>
+                        <button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="single_add_to_cart_button button alt">
+                            <?php echo esc_html( $product->single_add_to_cart_text() ); ?>
+                        </button>
                     </div>
                 </div>
             </header>

@@ -34,7 +34,7 @@
   /* Sticky left column */
   .product-sticky {
     position: sticky;
-    top: calc(var(--space-xl));
+    top: calc(var(--space-xl) * 2); /* povećan top da se manje pomjera */
     z-index: var(--z-sticky);
   }
 }
@@ -66,13 +66,13 @@
 .product-price { margin-bottom: 0; }
 
 .product-price .price {
-  font-size: 2.2rem; /* bigger and more prominent */
+  font-size: 2.8rem; /* povećana cijena */
   font-weight: 700;
   color: var(--color-secondary);
 }
 
 @media (min-width: 1080px) {
-  .product-price .price { font-size: 2.6rem; }
+  .product-price .price { font-size: 3.2rem; } /* još veća na desktopu */
 }
 
 .product-price .woocommerce-Price-amount {
@@ -160,19 +160,25 @@
   box-shadow: 0 8px 18px rgba(245, 197, 66, 0.35);
 }
 
-/* Desktop: Auto width for add to cart */
+/* Desktop: Horizontalni layout za CTA - cijena i button */
 @media (min-width: 1080px) {
   .product-cta { 
     display: flex; 
     align-items: center; 
-    gap: var(--space-lg);
-    flex-wrap: wrap;
+    gap: var(--space-xl); /* veći gap između cijene i button-a */
+    flex-wrap: nowrap;
   }
-  .product-price { flex: 0 0 auto; }
-  .product-add-to-cart { flex: 1; }
-  .product-add-to-cart .cart { flex-direction: row; align-items: center; gap: var(--space-md); }
-  .product-add-to-cart .quantity { margin-bottom: 0; }
-  .product-add-to-cart .single_add_to_cart_button { width: auto; flex: 0 0 auto; }
+  .product-price { 
+    flex: 0 0 auto; 
+  }
+  .product-add-to-cart { 
+    flex: 0 0 auto; 
+  }
+  .product-add-to-cart .single_add_to_cart_button { 
+    width: auto; 
+    min-width: 200px;
+    padding: var(--space-lg) var(--space-xl);
+  }
 }
 
 /* ===== PRODUCT IMAGES ===== */
@@ -205,7 +211,7 @@
   .product-images .woocommerce-product-gallery__image img {
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
-    transform: scale(1.15); /* bigger image */
+    transform: scale(1.25); /* još veća slika */
     transform-origin: top left;
   }
 }
