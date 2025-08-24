@@ -1001,12 +1001,9 @@ add_action('wp_head', function() {
             transform: none !important;
         }
         
-        /* Hide mobile menu panel on checkout page */
+        /* FORCE mobile menu closed on checkout - simple approach */
         .woocommerce-checkout .nav-panel {
             display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transform: translateX(100%) !important;
         }
         
         /* Prevent sticky positioning issues */
@@ -1051,14 +1048,20 @@ add_action('wp_head', function() {
             if (document.body.classList.contains('woocommerce-checkout')) {
                 console.log('Anti-freeze checkout script loaded');
                 
-                // FORCE CLOSE MOBILE MENU on checkout page
+                // SIMPLE: Just hide mobile menu completely on checkout
                 const mobileNav = document.getElementById('mobileNav');
                 const navToggle = document.getElementById('navToggle');
                 if (mobileNav && navToggle) {
+                    // Force hide menu
+                    mobileNav.style.display = 'none';
                     mobileNav.classList.remove('nav-panel--open');
                     navToggle.setAttribute('aria-expanded', 'false');
                     document.body.style.overflow = '';
-                    console.log('Mobile menu forcibly closed on checkout');
+                    console.log('Mobile menu completely hidden on checkout');
+                    
+                    // Disable toggle button on checkout
+                    navToggle.style.pointerEvents = 'none';
+                    navToggle.style.opacity = '0.5';
                 }
                 
                 // Allow normal menu functionality
@@ -1149,15 +1152,6 @@ add_action('wp_head', function() {
                         }
                     });
                 }, 500);
-                
-                // Continuous monitoring to keep mobile menu closed on checkout
-                const checkoutMenuMonitor = setInterval(function() {
-                    const mobileNav = document.getElementById('mobileNav');
-                    if (mobileNav && mobileNav.classList.contains('nav-panel--open')) {
-                        mobileNav.classList.remove('nav-panel--open');
-                        console.log('Mobile menu auto-closed on checkout page');
-                    }
-                }, 1000);
             }
         });
         </script>
