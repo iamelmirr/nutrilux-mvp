@@ -34,12 +34,13 @@ global $product;
                     </div>
                 <?php endif; ?>
 
-                <div class="product-price">
-                    <?php echo $product->get_price_html(); ?>
-                </div>
-
-                <div class="product-add-to-cart">
-                    <?php woocommerce_template_single_add_to_cart(); ?>
+                <div class="product-cta">
+                    <div class="product-price">
+                        <?php echo $product->get_price_html(); ?>
+                    </div>
+                    <div class="product-add-to-cart">
+                        <?php woocommerce_template_single_add_to_cart(); ?>
+                    </div>
                 </div>
             </header>
         </div>
@@ -71,11 +72,10 @@ global $product;
                 <section class="prod-section nutrition-section">
                     <h2><?php esc_html_e('Nutritivne vrijednosti', 'nutrilux'); ?></h2>
                     <table class="nutrition-table">
-                        <caption><?php esc_html_e('Nutritivne vrijednosti (100 g)', 'nutrilux'); ?></caption>
                         <thead>
                             <tr>
                                 <th scope="col"><?php esc_html_e('Nutritivne vrijednosti', 'nutrilux'); ?></th>
-                                <th scope="col"><?php esc_html_e('Količina', 'nutrilux'); ?></th>
+                                <th scope="col"><?php esc_html_e('Količina (100 g)', 'nutrilux'); ?></th>
                             </tr>
                         </thead>
                         <tbody>

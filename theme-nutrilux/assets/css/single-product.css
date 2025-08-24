@@ -6,7 +6,7 @@
 /* ===== SINGLE PRODUCT LAYOUT ===== */
 .single-product-main {
   padding-top: var(--space-xl);
-  padding-bottom: var(--space-3xl);
+  padding-bottom: var(--space-2xl); /* reduced bottom padding */
 }
 
 .single-product-content {
@@ -18,25 +18,24 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl); /* reduced gap below top block */
 }
 
 /* Desktop 2-column layout */
 @media (min-width: 1080px) {
+  /* Switch to 40/60 grid for desktop */
   .product-layout {
-    flex-direction: row;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    align-items: start;
     gap: var(--space-3xl);
   }
-  
-  .product-info {
-    flex: 0 0 55%;
-    order: 1;
-  }
-  
-  .product-images {
-    flex: 0 0 45%;
-    order: 2;
+
+  /* Sticky left column */
+  .product-sticky {
+    position: sticky;
+    top: calc(var(--space-xl));
+    z-index: var(--z-sticky);
   }
 }
 
@@ -46,9 +45,10 @@
 }
 
 .product-title {
+  margin-top: 24px; /* added 24px margin-top */
   margin-bottom: var(--space-md);
   color: var(--color-secondary);
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-size: clamp(1.4rem, 3.2vw, 1.9rem); /* smaller title */
 }
 
 .product-excerpt {
@@ -63,14 +63,16 @@
 }
 
 /* ===== PRODUCT PRICE ===== */
-.product-price {
-  margin-bottom: var(--space-lg);
-}
+.product-price { margin-bottom: 0; }
 
 .product-price .price {
-  font-size: 1.5rem;
+  font-size: 2.2rem; /* bigger and more prominent */
   font-weight: 700;
   color: var(--color-secondary);
+}
+
+@media (min-width: 1080px) {
+  .product-price .price { font-size: 2.6rem; }
 }
 
 .product-price .woocommerce-Price-amount {
@@ -110,47 +112,67 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  margin-bottom: var(--space-md);
 }
 
 .product-add-to-cart .quantity input {
-  width: 80px;
+  width: 60px;
+  height: 40px;
   padding: var(--space-sm);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-gray-400);
+  border-radius: var(--radius-md);
   text-align: center;
   font-size: 1rem;
+  font-weight: 600;
+  background: var(--color-white);
+  transition: border-color 0.2s ease;
+}
+
+.product-add-to-cart .quantity input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.2);
+}
+
+.product-add-to-cart .quantity label {
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-right: var(--space-xs);
 }
 
 .product-add-to-cart .single_add_to_cart_button {
   width: 100%;
-  background: var(--color-primary);
+  background: var(--color-primary); /* yellow from palette */
   color: var(--color-secondary);
   border: none;
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 1rem;
+  padding: calc(var(--space-md) + 2px) var(--space-xl);
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 14px rgba(245, 197, 66, 0.25);
 }
 
 .product-add-to-cart .single_add_to_cart_button:hover {
   background: var(--color-primary-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 18px rgba(245, 197, 66, 0.35);
 }
 
 /* Desktop: Auto width for add to cart */
 @media (min-width: 1080px) {
-  .product-add-to-cart .cart {
-    flex-direction: row;
-    align-items: center;
+  .product-cta { 
+    display: flex; 
+    align-items: center; 
+    gap: var(--space-lg);
+    flex-wrap: wrap;
   }
-  
-  .product-add-to-cart .single_add_to_cart_button {
-    width: auto;
-    flex: 0 0 auto;
-  }
+  .product-price { flex: 0 0 auto; }
+  .product-add-to-cart { flex: 1; }
+  .product-add-to-cart .cart { flex-direction: row; align-items: center; gap: var(--space-md); }
+  .product-add-to-cart .quantity { margin-bottom: 0; }
+  .product-add-to-cart .single_add_to_cart_button { width: auto; flex: 0 0 auto; }
 }
 
 /* ===== PRODUCT IMAGES ===== */
@@ -178,9 +200,65 @@
   box-shadow: var(--shadow-sm);
 }
 
+@media (min-width: 1080px) {
+  /* Make gallery visually larger on desktop */
+  .product-images .woocommerce-product-gallery__image img {
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.15); /* bigger image */
+    transform-origin: top left;
+  }
+}
+
 /* ===== PRODUCT SECTIONS ===== */
 .product-sections {
-  margin-top: var(--space-2xl);
+  margin-top: var(--space-lg); /* smaller gap to details */
+}
+
+/* Make sticky behave more like fixed: avoid parent artifacts */
+@media (min-width: 1080px) {
+  .single-product-main, .single-product-content, .product-layout { 
+    overflow: visible; 
+    contain: none;
+  }
+  .product-sticky { 
+    position: sticky; 
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    will-change: transform;
+  }
+  
+  /* Ensure smooth scrolling behavior */
+  .product-sticky::-webkit-scrollbar {
+    width: 6px;
+  }
+  .product-sticky::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .product-sticky::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: 3px;
+  }
+}
+
+/* Override WooCommerce purple button for alternate styles */
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) button.button.alt,
+.woocommerce a.button.alt, .woocommerce button.button.alt, .woocommerce input.button.alt,
+.woocommerce #respond input#submit.alt,
+.woocommerce .single_add_to_cart_button.button.alt {
+  background: var(--color-primary) !important;
+  color: var(--color-secondary) !important;
+  border: none !important;
+  box-shadow: 0 6px 14px rgba(245, 197, 66, 0.25) !important;
+}
+
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) button.button.alt:hover,
+.woocommerce a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce input.button.alt:hover,
+.woocommerce #respond input#submit.alt:hover,
+.woocommerce .single_add_to_cart_button.button.alt:hover {
+  background: var(--color-primary-dark) !important;
+  color: var(--color-secondary) !important;
 }
 
 .prod-section {
