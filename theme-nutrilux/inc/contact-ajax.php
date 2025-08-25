@@ -33,9 +33,10 @@ function nutrilux_handle_contact_form() {
     // Sanitize and validate input
     $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
     $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
+    $phone = isset($_POST['contact_phone']) ? sanitize_text_field($_POST['contact_phone']) : '';
     $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
     
-    error_log('Nutrilux Contact Form: Data - Name: ' . $name . ', Email: ' . $email);
+    error_log('Nutrilux Contact Form: Data - Name: ' . $name . ', Email: ' . $email . ', Phone: ' . $phone);
     
     // Validation
     $errors = array();
@@ -46,6 +47,10 @@ function nutrilux_handle_contact_form() {
     
     if (empty($email) || !is_email($email)) {
         $errors[] = 'Ispravna email adresa je obavezna';
+    }
+    
+    if (empty($phone)) {
+        $errors[] = 'Broj telefona je obavezan';
     }
     
     if (empty($message)) {
@@ -63,6 +68,7 @@ function nutrilux_handle_contact_form() {
     $email_message = "Nova poruka sa kontakt forme:\n\n";
     $email_message .= "Ime: " . $name . "\n";
     $email_message .= "Email: " . $email . "\n";
+    $email_message .= "Telefon: " . $phone . "\n";
     $email_message .= "Datum: " . current_time('d.m.Y H:i') . "\n\n";
     $email_message .= "Poruka:\n" . $message . "\n\n";
     $email_message .= "---\n";
@@ -87,7 +93,7 @@ function nutrilux_handle_contact_form() {
         ));
         
         // Store contact in database (optional - for future reference)
-        nutrilux_store_contact_submission($name, $email, $message);
+        nutrilux_store_contact_submission($name, $email, $phone, $message);
         
         wp_send_json_success('Poruka je uspješno poslana. Hvala vam!');
     } else {
@@ -110,7 +116,7 @@ add_action('wp_ajax_nopriv_nutrilux_contact', 'nutrilux_handle_contact_form_nopr
 /**
  * Store contact submission in database (optional)
  */
-function nutrilux_store_contact_submission($name, $email, $message) {
+function nutrilux_store_contact_submission($name, $email, $phone, $message) {
     global $wpdb;
     
     $table_name = $wpdb->prefix . 'nutrilux_contacts';
@@ -124,13 +130,14 @@ function nutrilux_store_contact_submission($name, $email, $message) {
         array(
             'name' => $name,
             'email' => $email,
+            'phone' => $phone,
             'message' => $message,
             'submitted_at' => current_time('mysql'),
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
         ),
         array(
-            '%s', '%s', '%s', '%s', '%s', '%s'
+            '%s', '%s', '%s', '%s', '%s', '%s', '%s'
         )
     );
     
@@ -151,6 +158,7 @@ function nutrilux_create_contacts_table() {
         id int(11) NOT NULL AUTO_INCREMENT,
         name varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
+        phone varchar(50) DEFAULT '',
         message text NOT NULL,
         submitted_at datetime NOT NULL,
         ip_address varchar(45) DEFAULT '',
@@ -221,6 +229,7 @@ function nutrilux_contact_admin_page() {
                         <th>Datum</th>
                         <th>Ime</th>
                         <th>Email</th>
+                        <th>Telefon</th>
                         <th>Poruka</th>
                         <th>Status</th>
                         <th>Akcije</th>
@@ -235,6 +244,15 @@ function nutrilux_contact_admin_page() {
                                 <a href="mailto:<?php echo esc_attr($contact->email); ?>">
                                     <?php echo esc_html($contact->email); ?>
                                 </a>
+                            </td>
+                            <td>
+                                <?php if (!empty($contact->phone)): ?>
+                                    <a href="tel:<?php echo esc_attr($contact->phone); ?>">
+                                        <?php echo esc_html($contact->phone); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <span style="color: #999;">-</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php echo esc_html(wp_trim_words($contact->message, 10)); ?>

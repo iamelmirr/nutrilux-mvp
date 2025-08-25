@@ -125,6 +125,10 @@
                     <label for="contact-email">Email*</label>
                     <input type="email" id="contact-email" name="contact_email" required>
                 </div>
+                <div class="form-group" id="contact-phone-group">
+                    <label for="contact-phone">Broj telefona*</label>
+                    <input type="tel" id="contact-phone" name="contact_phone" placeholder="npr. +387 61 000 000" required>
+                </div>
                 <div class="form-group full" id="contact-message-group">
                     <label for="contact-message">Poruka*</label>
                     <textarea id="contact-message" name="contact_message" rows="4" required></textarea>
@@ -181,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateForm() {
         const name = document.getElementById('contact-name');
         const email = document.getElementById('contact-email');
+        const phone = document.getElementById('contact-phone');
         const message = document.getElementById('contact-message');
         
         let isValid = true;
@@ -197,6 +202,10 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         } else {
             email.classList.remove('error');
+        }
+        
+        if (!validateField(phone, 'Broj telefona je obavezan')) {
+            isValid = false;
         }
         
         if (!validateField(message, 'Poruka je obavezna')) {

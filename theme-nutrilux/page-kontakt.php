@@ -60,6 +60,20 @@ get_header(); ?>
                                     </div>
                                     
                                     <div class="form-group">
+                                        <label for="contact_phone">Broj telefona *</label>
+                                        <input 
+                                            type="tel" 
+                                            id="contact_phone" 
+                                            name="contact_phone" 
+                                            required 
+                                            aria-required="true"
+                                            autocomplete="tel"
+                                            placeholder="npr. +387 61 000 000"
+                                        >
+                                        <span class="error-message" id="phone-error"></span>
+                                    </div>
+                                    
+                                    <div class="form-group">
                                         <label for="contact_message">Poruka *</label>
                                         <textarea 
                                             id="contact_message" 
@@ -186,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateForm() {
         const name = document.getElementById('contact_name');
         const email = document.getElementById('contact_email');
+        const phone = document.getElementById('contact_phone');
         const message = document.getElementById('contact_message');
         
         let isValid = true;
@@ -210,6 +225,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('email-error').textContent = '';
         }
         
+        // Validate phone
+        if (!validateField(phone, 'phone-error', 'Broj telefona je obavezan')) {
+            isValid = false;
+        }
+        
         // Validate message
         if (!validateField(message, 'message-error', 'Poruka je obavezna')) {
             isValid = false;
@@ -219,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Real-time validation
-    ['contact_name', 'contact_email', 'contact_message'].forEach(function(fieldId) {
+    ['contact_name', 'contact_email', 'contact_phone', 'contact_message'].forEach(function(fieldId) {
         const field = document.getElementById(fieldId);
         field.addEventListener('blur', function() {
             validateForm();
@@ -309,14 +329,14 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset();
         
         // Reset validation states
-        ['contact_name', 'contact_email', 'contact_message'].forEach(function(fieldId) {
+        ['contact_name', 'contact_email', 'contact_phone', 'contact_message'].forEach(function(fieldId) {
             const field = document.getElementById(fieldId);
             field.setAttribute('aria-invalid', 'false');
             field.classList.remove('error');
         });
         
         // Clear error messages
-        ['name-error', 'email-error', 'message-error'].forEach(function(errorId) {
+        ['name-error', 'email-error', 'phone-error', 'message-error'].forEach(function(errorId) {
             document.getElementById(errorId).textContent = '';
         });
         
