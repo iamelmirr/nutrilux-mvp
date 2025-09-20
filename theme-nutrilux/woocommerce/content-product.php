@@ -34,17 +34,6 @@ if (empty($product) || !$product->is_visible()) {
             </a>
         </h3>
 
-        <!-- Product Badges -->
-        <?php 
-        $sugar_free = get_post_meta(get_the_ID(), '_nutri_badge_sugar_free', true);
-        $sweetener_free = get_post_meta(get_the_ID(), '_nutri_badge_sweetener_free', true);
-        if ($sugar_free || $sweetener_free): ?>
-        <div class="p-card__badges" aria-label="Istaknute karakteristike">
-            <?php if ($sugar_free): ?><span class="badge">Bez šećera</span><?php endif; ?>
-            <?php if ($sweetener_free): ?><span class="badge">Bez zaslađivača</span><?php endif; ?>
-        </div>
-        <?php endif; ?>
-
         <!-- Product Excerpt -->
         <p class="p-card__excerpt">
             <?php 

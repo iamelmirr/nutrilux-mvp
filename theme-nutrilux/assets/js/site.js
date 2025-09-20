@@ -371,31 +371,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 'nonce': nutrilux_ajax.nonce
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('AJAX Response status:', response.status);
+            return response.json();
+        })
         .then(data => {
+            console.log('AJAX Response data:', data);
             if (data.success) {
                 // Success feedback
                 btn.textContent = '✓ Dodano!';
                 btn.style.background = '#4CAF50';
                 btn.style.borderColor = '#4CAF50';
                 
-                // Update cart count if element exists
-                const cartCount = document.querySelector('.cart-count, .cart-badge');
-                if (cartCount && data.cart_count) {
-                    cartCount.textContent = data.cart_count;
-                    
-                    // Animation for cart button
-                    const cartButton = document.querySelector('.cart-button');
+                // Update cart using WooCommerce fragments if available
+                if (data.fragments && data.fragments['a.cart-button']) {
+                    const cartButton = document.querySelector('a.cart-button');
                     if (cartButton) {
-                        cartButton.style.transform = 'scale(1.1)';
-                        setTimeout(() => {
-                            cartButton.style.transform = '';
-                        }, 200);
+                        cartButton.outerHTML = data.fragments['a.cart-button'];
+                        console.log('Cart updated using fragments');
+                    }
+                } else {
+                    // Fallback: Update cart count and total manually
+                    const cartCount = document.querySelector('.cart-badge[data-cart-count], .cart-count');
+                    const cartTotal = document.querySelector('.cart-total[data-cart-total]');
+                    
+                    console.log('Using fallback update. Elements found:', { cartCount, cartTotal });
+                    
+                    if (cartCount && data.cart_count) {
+                        cartCount.textContent = data.cart_count;
+                        console.log('Updated cart count to:', data.cart_count);
+                    }
+                    
+                    if (cartTotal && data.cart_total) {
+                        cartTotal.innerHTML = data.cart_total;
+                        console.log('Updated cart total to:', data.cart_total);
                     }
                 }
                 
+                // Animation for cart button
+                const cartButton = document.querySelector('.cart-button');
+                if (cartButton) {
+                    cartButton.style.transform = 'scale(1.1)';
+                    cartButton.style.background = 'rgba(76, 175, 80, 0.1)';
+                    setTimeout(() => {
+                        cartButton.style.transform = '';
+                        cartButton.style.background = '';
+                    }, 300);
+                }
+                
                 // Show success message
-                showCartNotification('Proizvod doddan u korpu!');
+                showCartSuccessPopup(data.product_name || 'Proizvod');
                 
                 // Reset button after delay
                 setTimeout(() => {
@@ -411,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.style.background = '#f44336';
                 btn.style.borderColor = '#f44336';
                 
-                showCartNotification('Greška prilikom dodavanja u korpu.', 'error');
+                showCartSuccessPopup('Greška prilikom dodavanja');
                 
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -427,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.textContent = 'Greška';
             btn.style.background = '#f44336';
             
-            showCartNotification('Greška prilikom dodavanja u korpu.', 'error');
+            showCartSuccessPopup('Greška prilikom dodavanja');
             
             setTimeout(() => {
                 btn.textContent = originalText;

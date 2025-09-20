@@ -2201,6 +2201,34 @@ ul.products[class*="columns"] li.product {
   box-shadow: 0 2px 6px rgba(0, 184, 148, 0.3);
 }
 
+/* Shop page badges */
+.shop-product-badges-header {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 20px 0 16px 0;
+  flex-wrap: wrap;
+}
+
+.shop-product-badges-header .product-badge {
+  background: #FF6B35;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+  border: none;
+  white-space: nowrap;
+}
+
+.shop-product-badges-header .product-badge--sweetener-free {
+  background: #00B894;
+  box-shadow: 0 2px 6px rgba(0, 184, 148, 0.3);
+}
+
 .product-cards-slider {
   display: flex;
   gap: 12px;

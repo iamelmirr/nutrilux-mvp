@@ -28,6 +28,12 @@ get_header(); ?>
 <main id="main" class="site-main woocommerce-main">
     <div class="wrap">
         
+        <!-- Product badges -->
+        <div class="shop-product-badges-header">
+            <span class="product-badge product-badge--sugar-free">Bez šećera</span>
+            <span class="product-badge product-badge--sweetener-free">Bez zaslađivača</span>
+        </div>
+        
         <?php
         if (woocommerce_product_loop()) {
 

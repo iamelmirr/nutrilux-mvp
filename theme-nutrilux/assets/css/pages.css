@@ -100,7 +100,13 @@
   font-size: 2rem;
   font-weight: 600;
   color: var(--color-secondary);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-4xl);
+}
+
+/* Extra spacing for About page section titles */
+.about-values .section-title,
+.about-process .section-title {
+  margin-bottom: 3rem;
 }
 
 .values-grid {
