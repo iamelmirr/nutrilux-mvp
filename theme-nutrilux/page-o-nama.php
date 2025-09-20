@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: O nama
- * Page template for About Us page
+ * Page Template: O nama
+ * Template for About page with slug 'o-nama'
  */
 
 get_header(); ?>

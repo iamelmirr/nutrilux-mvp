@@ -48,3 +48,33 @@
 - P5: Single product pages
 - P6: Contact forms
 - P7: Product data
+
+---
+
+## Live dev: symlink or sync (macOS / LocalWP)
+
+Ako želiš da svaka promjena u repo-u odmah bude vidljiva u LocalWP sajtu, koristi jednu od ove dvije opcije.
+
+### Opcija A — Symlink (preporučeno)
+LocalWP sites su obično na:
+`~/Library/Application Support/Local/sites/<site-name>/app/public/wp-content/themes`
+
+Napravi symlink iz repo teme:
+```bash
+chmod +x scripts/dev-link.sh
+./scripts/dev-link.sh "~/Library/Application Support/Local/sites/<site-name>/app/public/wp-content/themes"
+```
+Zatim u WP Admin → Appearance → Themes aktiviraj “Nutrilux”.
+
+### Opcija B — Automatski sync (ako symlink nije opcija)
+Rsync-uj temu u WP themes folder, jednokratno ili u watch modu:
+```bash
+chmod +x scripts/dev-sync.sh
+# Jednokratno
+./scripts/dev-sync.sh "~/Library/Application Support/Local/sites/<site-name>/app/public/wp-content/themes/theme-nutrilux"
+
+# Watch mod (fswatch ako je instaliran; u suprotnom polling)
+./scripts/dev-sync.sh --watch "~/Library/Application Support/Local/sites/<site-name>/app/public/wp-content/themes/theme-nutrilux"
+```
+
+Napomena: BrowserSync možeš pokrenuti (vidi package.json) za auto-reload browsera dok radiš.

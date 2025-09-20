@@ -280,6 +280,19 @@ function nutrilux_customize_woocommerce_settings() {
 add_action('woocommerce_init', 'nutrilux_customize_woocommerce_settings');
 
 /**
+ * Auto-seed products if shop is empty (local/dev convenience)
+ */
+add_action('woocommerce_init', function(){
+    if (function_exists('nutrilux_seed_new_lineup')) {
+        $count = wp_count_posts('product');
+        $published = isset($count->publish) ? intval($count->publish) : 0;
+        if ($published === 0) {
+            nutrilux_seed_new_lineup();
+        }
+    }
+});
+
+/**
  * Allow only Cash on Delivery at checkout
  */
 add_filter('woocommerce_available_payment_gateways', function($gateways){

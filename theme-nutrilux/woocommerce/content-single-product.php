@@ -44,7 +44,7 @@ global $product;
             <div class="product-price-highlight">
                 <span class="product-price"><?php echo $product->get_price_html(); ?></span>
             </div>
-            <p class="micro-hint" style="margin:6px 0 14px; color:#555; font-size:.9rem;">Plaćanje pouzećem • Dostava brzom poštom</p>
+            <p class="micro-hint" style="margin:6px 0 14px; color:#666; font-size:.9rem; font-style:italic;">Prirodno. Efikasno. Pouzdano.</p>
         <?php endif; ?>
         <?php if ($product->get_short_description()): ?>
             <div class="product-short-desc"><?php echo apply_filters('woocommerce_short_description', $product->get_short_description()); ?></div>

@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Kontakt
- * Page template for Contact page with AJAX form
+ * Page Template: Kontakt
+ * Template for Contact page with slug 'kontakt'
  */
 
 get_header(); ?>

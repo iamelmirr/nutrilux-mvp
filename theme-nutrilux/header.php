@@ -100,9 +100,9 @@
     </nav>
 </header>
 
-<!-- Site micro-hints (delivery/payment) -->
-<div class="site-hints" role="note" aria-label="Info o dostavi i plaćanju">
+<!-- Site micro-hints (brand message) -->
+<div class="site-hints" role="note" aria-label="Nutrilux inspiracija">
     <div class="wrap">
-        <p class="site-hints__text">Dostava brzom poštom • Plaćanje pouzećem</p>
+        <p class="site-hints__text">Vaša snaga. Vaš izbor. Vaš uspjeh.</p>
     </div>
 </div>

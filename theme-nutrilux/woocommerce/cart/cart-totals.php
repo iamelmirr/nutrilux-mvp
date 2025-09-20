@@ -103,4 +103,4 @@ defined( 'ABSPATH' ) || exit;
 
 </div>
 
-<p class="micro-hint" style="margin-top:10px; color:#555; font-size:.9rem; text-align:center;">Plaćanje pouzećem • Dostava brzom poštom</p>
+<p class="micro-hint" style="margin-top:15px; color:#666; font-size:.9rem; text-align:center; font-style:italic;">Vaš put ka boljim rezultatima počinje ovdje</p>

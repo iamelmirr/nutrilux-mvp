@@ -9,7 +9,7 @@ get_header(); ?>
 <section class="shop-hero">
   <div class="wrap shop-hero__inner">
     <h1 class="shop-hero__title">Naši proizvodi</h1>
-    <p class="shop-hero__desc">Kvalitetni proteini na bazi jaja u prahu za industriju, pekare i restorane.</p>
+  <p class="shop-hero__desc">Kvalitetni prirodni proteini za vašu snagu i energiju. Tri jedinstvene formule, dva praktična pakovanja.</p>
     <form class="woocommerce-ordering shop-hero__ordering" method="get">
       <?php 
         // Održimo postojeće name="orderby" polje
@@ -33,7 +33,7 @@ get_header(); ?>
 
             ?>
             <div style="margin:14px 0;">
-              <p class="micro-hint" style="margin:0 0 10px; color:#555; font-size:.9rem; text-align:center;">Plaćanje pouzećem • Dostava brzom poštom</p>
+              <p class="micro-hint" style="margin:0 0 10px; color:#666; font-size:.9rem; text-align:center; font-style:italic;">Otkrijte snagu prirodnih proteina</p>
               <hr style="border:0;border-top:1px solid #EEE5DA;" />
             </div>
             <?php

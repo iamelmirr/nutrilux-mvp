@@ -182,8 +182,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const messages = [
             'Snaga za napredak.',
             'Treniraj pametno, oporavljaj brzo.',
-            'Disciplinom do rezultata.',
-            'Za rekreativce i profesionalce.'
+            'Za rekreativce i profesionalce.',
+            'Prirodni protein za atletski uspjeh.',
+            'Svaki trening je korak dalje.',
+            'Tijelo traži kvalitetu - ti je daješ.',
+            'Oporavak koji osjetiš.',
+            'Bez kompromisa, samo rezultati.'
         ];
         let idx = 0;
         const swap = () => {
@@ -335,3 +339,126 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Quick Add to Cart for Simple Products
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle add to cart buttons
+    document.addEventListener('click', function(e) {
+        if (!e.target.matches('.add-to-cart-btn')) return;
+        
+        e.preventDefault();
+        const btn = e.target;
+        const productId = btn.dataset.productId;
+        
+        if (!productId) return;
+        
+        // Disable button and show loading
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Dodajem...';
+        btn.style.opacity = '0.7';
+        
+        // Add simple product to cart
+        fetch('/wp-admin/admin-ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'action': 'nutrilux_add_to_cart',
+                'product_id': productId,
+                'quantity': 1,
+                'nonce': nutrilux_ajax.nonce
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Success feedback
+                btn.textContent = '✓ Dodano!';
+                btn.style.background = '#4CAF50';
+                btn.style.borderColor = '#4CAF50';
+                
+                // Update cart count if element exists
+                const cartCount = document.querySelector('.cart-count, .cart-badge');
+                if (cartCount && data.cart_count) {
+                    cartCount.textContent = data.cart_count;
+                    
+                    // Animation for cart button
+                    const cartButton = document.querySelector('.cart-button');
+                    if (cartButton) {
+                        cartButton.style.transform = 'scale(1.1)';
+                        setTimeout(() => {
+                            cartButton.style.transform = '';
+                        }, 200);
+                    }
+                }
+                
+                // Show success message
+                showCartNotification('Proizvod doddan u korpu!');
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                    btn.disabled = false;
+                    btn.style.opacity = '';
+                }, 2500);
+            } else {
+                // Error feedback
+                btn.textContent = 'Greška';
+                btn.style.background = '#f44336';
+                btn.style.borderColor = '#f44336';
+                
+                showCartNotification('Greška prilikom dodavanja u korpu.', 'error');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                    btn.disabled = false;
+                    btn.style.opacity = '';
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            console.error('Ajax error:', error);
+            btn.textContent = 'Greška';
+            btn.style.background = '#f44336';
+            
+            showCartNotification('Greška prilikom dodavanja u korpu.', 'error');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+                btn.disabled = false;
+                btn.style.opacity = '';
+            }, 2000);
+        });
+    });
+});
+
+// Cart notification helper
+function showCartNotification(message, type = 'success') {
+    // Remove existing notification
+    const existing = document.querySelector('.cart-notification');
+    if (existing) existing.remove();
+    
+    // Create new notification
+    const notification = document.createElement('div');
+    notification.className = `cart-notification cart-notification--${type}`;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Show with animation
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Hide after delay
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
