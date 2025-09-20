@@ -235,6 +235,63 @@ function nutrilux_enqueue_assets() {
             ['nutrilux-layout'],
             '1.0.0'
         );
+        
+        // Single Product CSS - only on product pages
+        if (is_product()) {
+            wp_enqueue_style(
+                'nutrilux-single-product',
+                get_template_directory_uri() . '/assets/css/single-product.css',
+                ['nutrilux-layout'],
+                '1.0.' . time() // Cache busting
+            );
+            
+            // Add critical CSS inline for immediate loading
+            wp_add_inline_style('nutrilux-single-product', '
+                /* Reset any existing single product styles */
+                .single-product-page .woocommerce div.product { 
+                    display: block !important; 
+                }
+                
+                .single-product-layout { 
+                    display: flex !important; 
+                    max-width: 1200px; 
+                    margin: 0 auto; 
+                    padding: 40px 20px; 
+                    gap: 60px; 
+                    align-items: flex-start;
+                }
+                .product-left { 
+                    flex: 0 0 50% !important; 
+                    position: sticky;
+                    top: 20px;
+                }
+                .product-right { 
+                    flex: 0 0 50% !important; 
+                }
+                .product-image img {
+                    width: 100%;
+                    height: auto;
+                    border-radius: 8px;
+                }
+                .product-name {
+                    font-size: 32px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 20px;
+                }
+                .add-to-cart-button {
+                    width: 100%;
+                    background: #FFD700 !important;
+                    color: #2c3e50 !important;
+                    border: 2px solid #FFD700 !important;
+                    padding: 18px 30px;
+                    font-size: 18px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    border-radius: 8px;
+                }
+            ');
+        }
     }
     
     // Main JavaScript
@@ -986,3 +1043,78 @@ add_action('admin_menu', function(){
         <?php
     });
 });
+
+/**
+ * Single Product Custom Fields
+ */
+add_action('add_meta_boxes', 'nutrilux_add_product_meta_boxes');
+function nutrilux_add_product_meta_boxes() {
+    add_meta_box(
+        'nutrilux_product_details',
+        'Nutrilux Product Details',
+        'nutrilux_product_details_callback',
+        'product',
+        'normal',
+        'high'
+    );
+}
+
+function nutrilux_product_details_callback($post) {
+    wp_nonce_field('nutrilux_product_details_nonce', 'nutrilux_product_details_nonce');
+    
+    $short_desc = get_post_meta($post->ID, '_nutrilux_short_description', true);
+    $detailed_desc = get_post_meta($post->ID, '_nutrilux_detailed_description', true);
+    $nutrition_facts = get_post_meta($post->ID, '_nutrilux_nutrition_facts', true);
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="nutrilux_short_description">Kratki opis</label></th>
+            <td>
+                <textarea id="nutrilux_short_description" name="nutrilux_short_description" rows="3" cols="50"><?php echo esc_textarea($short_desc); ?></textarea>
+                <p class="description">Kratki opis proizvoda koji se prikazuje na vrhu desne strane.</p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="nutrilux_detailed_description">Detaljni opis</label></th>
+            <td>
+                <textarea id="nutrilux_detailed_description" name="nutrilux_detailed_description" rows="6" cols="50"><?php echo esc_textarea($detailed_desc); ?></textarea>
+                <p class="description">Detaljni opis proizvoda ispod kratkog opisa.</p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="nutrilux_nutrition_facts">Nutritivne vrijednosti</label></th>
+            <td>
+                <textarea id="nutrilux_nutrition_facts" name="nutrilux_nutrition_facts" rows="8" cols="50"><?php echo esc_textarea($nutrition_facts); ?></textarea>
+                <p class="description">Unesite nutritivne vrijednosti u formatu: Naziv|Vrijednost (jedan red po stavci).<br>
+                Primjer:<br>
+                Kalorije|380 kcal<br>
+                Proteini|85g<br>
+                Ugljeni hidrati|2g</p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+add_action('save_post', 'nutrilux_save_product_details');
+function nutrilux_save_product_details($post_id) {
+    if (!isset($_POST['nutrilux_product_details_nonce']) || 
+        !wp_verify_nonce($_POST['nutrilux_product_details_nonce'], 'nutrilux_product_details_nonce')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    
+    if (isset($_POST['nutrilux_short_description'])) {
+        update_post_meta($post_id, '_nutrilux_short_description', sanitize_textarea_field($_POST['nutrilux_short_description']));
+    }
+    
+    if (isset($_POST['nutrilux_detailed_description'])) {
+        update_post_meta($post_id, '_nutrilux_detailed_description', sanitize_textarea_field($_POST['nutrilux_detailed_description']));
+    }
+    
+    if (isset($_POST['nutrilux_nutrition_facts'])) {
+        update_post_meta($post_id, '_nutrilux_nutrition_facts', sanitize_textarea_field($_POST['nutrilux_nutrition_facts']));
+    }
+}

@@ -342,20 +342,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Quick Add to Cart for Simple Products
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle add to cart buttons
+    // Handle add to cart buttons (both cards and single product)
     document.addEventListener('click', function(e) {
-        if (!e.target.matches('.add-to-cart-btn')) return;
+        if (!e.target.matches('.add-to-cart-btn, .single_add_to_cart_button, .add-to-cart-button')) return;
         
         e.preventDefault();
         const btn = e.target;
-        const productId = btn.dataset.productId;
+        let productId, quantity = 1;
+        
+        // Handle different button types
+        if (btn.matches('.single_add_to_cart_button, .add-to-cart-button')) {
+            // Single product page
+            productId = btn.value || btn.dataset.productId;
+            const quantityInput = btn.closest('form').querySelector('input[name="quantity"]');
+            quantity = quantityInput ? quantityInput.value : 1;
+        } else {
+            // Product card
+            productId = btn.dataset.productId;
+        }
         
         if (!productId) return;
         
         // Disable button and show loading
         const originalText = btn.textContent;
         btn.disabled = true;
-        btn.textContent = 'Dodajem...';
+        btn.textContent = btn.matches('.single_add_to_cart_button, .add-to-cart-button') ? 'DODAJEM...' : 'Dodajem...';
         btn.style.opacity = '0.7';
         
         // Add simple product to cart
@@ -367,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body: new URLSearchParams({
                 'action': 'nutrilux_add_to_cart',
                 'product_id': productId,
-                'quantity': 1,
+                'quantity': quantity,
                 'nonce': nutrilux_ajax.nonce
             })
         })
@@ -379,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('AJAX Response data:', data);
             if (data.success) {
                 // Success feedback
-                btn.textContent = '✓ Dodano!';
+                btn.textContent = btn.matches('.single_add_to_cart_button, .add-to-cart-button') ? '✓ DODANO!' : '✓ Dodano!';
                 btn.style.background = '#4CAF50';
                 btn.style.borderColor = '#4CAF50';
                 
