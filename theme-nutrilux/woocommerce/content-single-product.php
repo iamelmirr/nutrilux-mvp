@@ -31,10 +31,20 @@ global $product;
     </div>
     <div class="product-info">
         <h1 class="product-title"><?php the_title(); ?></h1>
+        <?php 
+        $sugar_free = get_post_meta(get_the_ID(), '_nutri_badge_sugar_free', true);
+        $sweetener_free = get_post_meta(get_the_ID(), '_nutri_badge_sweetener_free', true);
+        if ($sugar_free || $sweetener_free): ?>
+            <div class="product-badges" aria-label="Istaknute karakteristike">
+                <?php if ($sugar_free): ?><span class="badge">Bez šećera</span><?php endif; ?>
+                <?php if ($sweetener_free): ?><span class="badge">Bez zaslađivača</span><?php endif; ?>
+            </div>
+        <?php endif; ?>
         <?php if ($product->get_price_html()): ?>
             <div class="product-price-highlight">
                 <span class="product-price"><?php echo $product->get_price_html(); ?></span>
             </div>
+            <p class="micro-hint" style="margin:6px 0 14px; color:#555; font-size:.9rem;">Plaćanje pouzećem • Dostava brzom poštom</p>
         <?php endif; ?>
         <?php if ($product->get_short_description()): ?>
             <div class="product-short-desc"><?php echo apply_filters('woocommerce_short_description', $product->get_short_description()); ?></div>

@@ -99,3 +99,10 @@
         </div>
     </nav>
 </header>
+
+<!-- Site micro-hints (delivery/payment) -->
+<div class="site-hints" role="note" aria-label="Info o dostavi i plaćanju">
+    <div class="wrap">
+        <p class="site-hints__text">Dostava brzom poštom • Plaćanje pouzećem</p>
+    </div>
+</div>

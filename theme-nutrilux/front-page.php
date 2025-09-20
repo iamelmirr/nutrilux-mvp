@@ -8,11 +8,17 @@
             <span class="hero-orb hero-orb--left"></span>
             <span class="hero-orb hero-orb--right"></span>
         </div>
+        <!-- Optional background slides (replace images when ready) -->
+        <div class="hero-slides" aria-hidden="true">
+            <div class="hero-slide is-active" style="background-image:url('<?php echo esc_url(get_template_directory_uri()); ?>/assets/img/hero-1.svg');"></div>
+            <div class="hero-slide" style="background-image:url('<?php echo esc_url(get_template_directory_uri()); ?>/assets/img/hero-2.svg');"></div>
+            <div class="hero-slide" style="background-image:url('<?php echo esc_url(get_template_directory_uri()); ?>/assets/img/hero-3.svg');"></div>
+        </div>
         <div class="wrap">
             <div class="hero-content">
-                <h1 class="page-title">Premium nutritivna rješenja od jajeta</h1>
-                <p class="hero-description">
-                    Nutrilux proizvodi kombinuju čistoću sastojaka i kontrolisan kvalitet – za profesionalce, sportiste i kućnu primjenu.
+                <h1 class="page-title">Premium proteinska rješenja</h1>
+                <p class="hero-description" id="motivation-rotator" aria-live="polite">
+                    Snaga za napredak.
                 </p>
                 <div class="hero-actions">
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="btn btn-primary">Pogledaj proizvode</a>
@@ -22,40 +28,13 @@
         </div>
     </section>
 
-    <!-- ===== PRODUCTS SECTION ===== -->
-    <section class="home-products section">
+    <!-- ===== DISCOVER CTA SECTION (Products on next click) ===== -->
+    <section class="section section--soft">
         <div class="wrap">
-            <h2><?php esc_html_e('Naši proizvodi', 'nutrilux'); ?></h2>
-            <p class="section-intro"><?php esc_html_e('Kvalitetni proteinski sastojci i nutritivna rješenja za sve potrebe.', 'nutrilux'); ?></p>
-            <ul class="hp-grid">
-                <?php
-                $q = new WP_Query([
-                    'post_type' => 'product',
-                    'posts_per_page' => 4,
-                    'post_status' => 'publish'
-                ]);
-                if ($q->have_posts()):
-                    while ($q->have_posts()): $q->the_post();
-                        wc_get_template_part('content', 'product');
-                    endwhile;
-                    wp_reset_postdata();
-                else:
-                    if (current_user_can('manage_options')):
-                        echo '<li class="hp-grid__empty">';
-                        echo '<p>' . esc_html__('Nema proizvoda.', 'nutrilux') . '</p>';
-                        echo '<a href="' . esc_url(admin_url('edit.php?post_type=product')) . '" class="btn btn--outline">' . esc_html__('Dodaj prvi proizvod', 'nutrilux') . '</a>';
-                        echo '</li>';
-                    else:
-                        echo '<li class="product-empty">' . esc_html__('Proizvodi uskoro dostupni.', 'nutrilux') . '</li>';
-                    endif;
-                endif;
-                ?>
-            </ul>
-            <?php if ($q->have_posts()) : ?>
-                <div class="home-products__cta">
-                    <a class="btn btn--outline" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"><?php esc_html_e('Svi proizvodi', 'nutrilux'); ?></a>
-                </div>
-            <?php endif; ?>
+            <div class="discover-cta">
+                <p class="discover-text">Spremni? Proizvodi su istaknuti u sljedećem koraku.</p>
+                <a class="btn btn--outline" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">Otvorite shop</a>
+            </div>
         </div>
     </section>
 

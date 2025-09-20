@@ -1,3 +1,16 @@
+<?php
+/**
+ * Nutrilux Theme Functions
+ * 
+ * @package Nutrilux
+ * @version 1.0.0
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 // Prevod WooCommerce stringova na single product page
 add_filter('gettext', function($translated, $text, $domain) {
     if ($domain === 'woocommerce') {
@@ -16,18 +29,9 @@ add_filter('gettext', function($translated, $text, $domain) {
     }
     return $translated;
 }, 10, 3);
-<?php
-/**
- * Nutrilux Theme Functions
- * 
- * @package Nutrilux
- * @version 1.0.0
- */
 
-// Prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
-}
+// Admin tools: new product lineup seeder (Premium, Gold, Zero)
+require_once get_template_directory() . '/inc/product-seed-nx.php';
 
 /**
  * Theme setup
@@ -244,14 +248,7 @@ add_filter('the_content', function($content) {
    CHECKOUT REFINEMENT - BOSANSKA LOKALIZACIJA, BIH ONLY, COD ONLY
    ======================================================================== */
 
-/* === CHECKOUT: Allowed Country (BiH only) === */
-add_filter('woocommerce_countries_allowed_countries', function($countries) {
-    return ['BA' => 'Bosna i Hercegovina'];
-});
-
-add_filter('woocommerce_countries_shipping_countries', function($countries) {
-    return ['BA' => 'Bosna i Hercegovina'];
-});
+/* === CHECKOUT: Default Country (BA) without hard restriction === */
 
 add_filter('default_checkout_billing_country', function() {
     return 'BA';
@@ -557,6 +554,54 @@ function nutrilux_custom_order_review() {
     </table>
     <?php
 }
+
+/* ========================================================================
+   PACK SIZE SELECTOR (250g / 500g) – simple, no variations needed
+   ======================================================================== */
+
+// Render a size select on single product pages
+add_action('woocommerce_before_add_to_cart_button', function(){
+    // Only for purchasable SIMPLE products; variable products will use variations UI
+    global $product;
+    if (!$product || !$product->is_purchasable()) return;
+    if (!$product->is_type('simple')) return;
+    $sizes = [ '250g' => '250g', '500g' => '500g' ];
+    echo '<div class="nutri-pack-field" style="margin:10px 0 8px">';
+    echo '<label for="nutri_pack_size" style="display:block; font-weight:600; margin-bottom:6px;">Pakovanje</label>';
+    echo '<select name="nutri_pack_size" id="nutri_pack_size" style="min-width:180px; padding:8px 10px; border:1px solid #E2DCCC; border-radius:8px;">';
+    foreach($sizes as $val => $label){
+        $selected = ($val==='250g') ? ' selected' : '';
+        echo '<option value="'.esc_attr($val).'"'.$selected.'>'.esc_html($label).'</option>';
+    }
+    echo '</select>';
+    echo '</div>';
+});
+
+// Save the selected pack size into the cart item
+add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_id, $variation_id){
+    if (isset($_POST['nutri_pack_size']) && $_POST['nutri_pack_size'] !== '') {
+        $cart_item_data['nutri_pack_size'] = sanitize_text_field($_POST['nutri_pack_size']);
+    }
+    return $cart_item_data;
+}, 10, 3);
+
+// Show pack size in cart/checkout line items (frontend)
+add_filter('woocommerce_get_item_data', function($item_data, $cart_item){
+    if (!empty($cart_item['nutri_pack_size'])){
+        $item_data[] = array(
+            'name'  => 'Pakovanje',
+            'value' => $cart_item['nutri_pack_size']
+        );
+    }
+    return $item_data;
+}, 10, 2);
+
+// Persist pack size into the order items
+add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values, $order){
+    if (!empty($values['nutri_pack_size'])){
+        $item->add_meta_data('Pakovanje', $values['nutri_pack_size'], true);
+    }
+}, 10, 4);
 
 /* === DIREKTNO FORSIRANJE CHECKOUT TEMPLATE === */
 add_action('template_redirect', function() {

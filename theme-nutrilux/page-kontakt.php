@@ -122,12 +122,23 @@ get_header(); ?>
                                             <small>Pozovite za hitna pitanja</small>
                                         </div>
                                     </div>
+
+                                    <div class="contact-info-item">
+                                        <div class="contact-icon">💬</div>
+                                        <div class="contact-details">
+                                            <h3>WhatsApp</h3>
+                                            <p>
+                                                <a href="https://wa.me/38761234567" target="_blank" rel="noopener">Pošaljite WhatsApp poruku</a>
+                                            </p>
+                                            <small>Dostupni 9-17h</small>
+                                        </div>
+                                    </div>
                                     
                                     <div class="contact-info-item">
                                         <div class="contact-icon">🏢</div>
                                         <div class="contact-details">
                                             <h3>Adresa</h3>
-                                            <p>Nutrilux d.o.o.<br>Sarajevo, Bosna i Hercegovina</p>
+                                            <p>Nutrilux d.o.o.<br>Ul. 25 novembra 75350 Srebrenik</p>
                                             <small>Dostava brza poštom</small>
                                         </div>
                                     </div>

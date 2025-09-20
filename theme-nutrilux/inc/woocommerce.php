@@ -168,7 +168,8 @@ function nutrilux_localize_woocommerce_strings($translated_text, $text, $domain)
         'Sort by price: low to high' => 'Sortiraj po cijeni: niža do viša',
         'Sort by price: high to low' => 'Sortiraj po cijeni: viša do niža',
         'Read more' => 'Pročitaj više',
-        'Select options' => 'Izaberi opcije'
+        'Select options' => 'Izaberi opcije',
+        'Choose an option' => 'Odaberite opciju'
     );
     
     // Check if we have a translation for this text
@@ -260,6 +261,9 @@ function nutrilux_customize_woocommerce_settings() {
     update_option('woocommerce_price_decimal_sep', ',');
     update_option('woocommerce_price_num_decimals', 2);
     
+    // Default to Bosnia and Herzegovina; allow adjustments in admin
+    update_option('woocommerce_default_country', 'BA');
+
     // Inventory settings
     update_option('woocommerce_manage_stock', 'yes');
     update_option('woocommerce_hide_out_of_stock_items', 'yes');
@@ -274,6 +278,18 @@ function nutrilux_customize_woocommerce_settings() {
     update_option('nutrilux_woo_settings_configured', true);
 }
 add_action('woocommerce_init', 'nutrilux_customize_woocommerce_settings');
+
+/**
+ * Allow only Cash on Delivery at checkout
+ */
+add_filter('woocommerce_available_payment_gateways', function($gateways){
+    if (!is_admin()) {
+        foreach ($gateways as $id => $gw) {
+            if ($id !== 'cod') unset($gateways[$id]);
+        }
+    }
+    return $gateways;
+});
 
 /**
  * Remove WooCommerce breadcrumbs (we'll style our own)

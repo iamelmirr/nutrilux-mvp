@@ -9,6 +9,48 @@ $slug = method_exists($product, 'get_slug') ? $product->get_slug() : sanitize_ti
 $name = $product->get_name();
 
 switch (true) {
+    case (stripos($slug, 'nutrilux-premium') !== false || stripos($name, 'NUTRILUX Premium') !== false):
+        ?>
+        <div class="product-nutrition section">
+          <h2>Ključne informacije</h2>
+          <div class="product-features-grid">
+            <div class="product-feature">✅ Albumin – prirodni protein iz bjelanca jajeta.</div>
+            <div class="product-feature">✅ Bez šećera i bez zaslađivača.</div>
+            <div class="product-feature">✅ Okusi: vanilija, čokolada.</div>
+            <div class="product-feature">✅ Pakovanja: 250g i 500g.</div>
+          </div>
+          <div class="product-marketing">Treniraj pametno, oporavljaj brzo. <b>Snaga za napredak.</b></div>
+        </div>
+        <?php
+        break;
+    case (stripos($slug, 'nutrilux-gold') !== false || stripos($name, 'NUTRILUX Gold') !== false):
+        ?>
+        <div class="product-nutrition section">
+          <h2>Ključne informacije</h2>
+          <div class="product-features-grid">
+            <div class="product-feature">✅ 95% albumin + 5% aroma (vanilija ili čokolada).</div>
+            <div class="product-feature">✅ Bez šećera i bez zaslađivača.</div>
+            <div class="product-feature">✅ Prirodni protein iz bjelanca jajeta.</div>
+            <div class="product-feature">✅ Pakovanja: 250g i 500g.</div>
+          </div>
+          <div class="product-marketing">Disciplinom do rezultata. Za rekreativce i profesionalce.</div>
+        </div>
+        <?php
+        break;
+    case (stripos($slug, 'nutrilux-zero') !== false || stripos($name, 'NUTRILUX Zero') !== false):
+        ?>
+        <div class="product-nutrition section">
+          <h2>Ključne informacije</h2>
+          <div class="product-features-grid">
+            <div class="product-feature">✅ 100% albumin – čisti prirodni protein bez dodataka.</div>
+            <div class="product-feature">✅ Bez šećera i bez zaslađivača.</div>
+            <div class="product-feature">✅ Prirodni protein iz bjelanca jajeta.</div>
+            <div class="product-feature">✅ Pakovanja: 250g i 500g.</div>
+          </div>
+          <div class="product-marketing">Minimalizam u sastavu, maksimum u učinku.</div>
+        </div>
+        <?php
+        break;
     case (stripos($slug, 'cijelo-jaje') !== false || stripos($name, 'Cijelo jaje') !== false):
         // Cijelo jaje u prahu
         ?>

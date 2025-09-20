@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="g3" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#FFF2B3"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g3)"/>
+  <g fill="#EBDDAF">
+    <circle cx="400" cy="700" r="80"/>
+    <circle cx="900" cy="500" r="140"/>
+    <circle cx="1300" cy="260" r="110"/>
+  </g>
+  <g fill="#2A2E33" opacity="0.2">
+    <text x="100" y="820" font-family="Arial, Helvetica, sans-serif" font-size="64">Run • Lift • Recover</text>
+  </g>
+</svg>

@@ -36,7 +36,7 @@
                     <!-- Email -->
                     <div class="contact-item">
                         <span class="contact-icon" aria-hidden="true">✉️</span>
-                        <a href="mailto:info@nutrilux.com">info@nutrilux.com</a>
+                        <a href="mailto:info@nutrilux.ba">info@nutrilux.ba</a>
                     </div>
                     
                     <!-- Phone -->
@@ -45,10 +45,17 @@
                         <a href="tel:+38761234567">+387 61 234 567</a>
                     </div>
                     
+                    <!-- WhatsApp Direct -->
+                    <div class="contact-item">
+                        <span class="contact-icon" aria-hidden="true">�</span>
+                        <a href="https://wa.me/38761234567" target="_blank" rel="noopener">WhatsApp poruka</a>
+                    </div>
+                    
+                    
                     <!-- Address -->
                     <div class="contact-item">
                         <span class="contact-icon" aria-hidden="true">📍</span>
-                        <span><?php esc_html_e('Sarajevo, Bosna i Hercegovina', 'nutrilux'); ?></span>
+                        <span>Ul. 25 novembra 75350 Srebrenik</span>
                     </div>
                 </div>
             </div>

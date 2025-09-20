@@ -203,6 +203,9 @@ body.admin-bar { --admin-bar-offset:32px; }
   background:linear-gradient(0deg,#FFFFFF 0%, rgba(255,255,255,0) 100%);
 }
 .page-hero .wrap { position:relative; z-index:2; }
+.hero-slides { position:absolute; inset:0; overflow:hidden; z-index:1; opacity:.25; }
+.hero-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 800ms ease; }
+.hero-slide.is-active { opacity:1; }
 .hero-content {
   text-align:center;
   max-width:780px;
@@ -252,6 +255,16 @@ body.admin-bar { --admin-bar-offset:32px; }
   box-shadow:0 2px 14px -4px rgba(0,0,0,.10);
 }
 
+/* ===== Product badges (mobile-first) ===== */
+.badge { display:inline-block; font-size:.73rem; font-weight:600; padding:6px 10px; border-radius:999px; border:1px solid #E2DCCC; color:#2A2E33; background:#fff; margin-right:6px; }
+.p-card__badges { margin:6px 0 4px; }
+.product-badges { margin:8px 0 10px; }
+
+/* ===== Discover CTA box ===== */
+.discover-cta { display:flex; flex-direction:column; align-items:flex-start; gap:10px; background:#fff; border:1px solid #EEE5DA; border-radius:12px; padding:18px; }
+.discover-text { margin:0; color:#2A2E33; font-weight:500; }
+@media (min-width:768px){ .discover-cta { flex-direction:row; align-items:center; justify-content:space-between; } }
+
 @media (min-width:720px){
   .page-hero { padding:64px 0 56px; }
   .hero-actions { flex-direction:row; }
@@ -260,6 +273,10 @@ body.admin-bar { --admin-bar-offset:32px; }
   .page-hero { padding:92px 0 72px; }
   .page-title { font-size:clamp(3rem,4.8vw,4.2rem); }
 }
+
+/* ===== Site micro-hints ===== */
+.site-hints { background:#FFF7DE; border-top:1px solid #F0E6CE; border-bottom:1px solid #F0E6CE; }
+.site-hints__text { margin:8px 0; font-size:.9rem; color:#2A2E33; text-align:center; }
 
 /* ========== SECTION UTILITIES & RHYTHM ========== */
 .section {

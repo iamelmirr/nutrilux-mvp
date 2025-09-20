@@ -31,6 +31,12 @@ get_header(); ?>
         <?php
         if (woocommerce_product_loop()) {
 
+            ?>
+            <div style="margin:14px 0;">
+              <p class="micro-hint" style="margin:0 0 10px; color:#555; font-size:.9rem; text-align:center;">Plaćanje pouzećem • Dostava brzom poštom</p>
+              <hr style="border:0;border-top:1px solid #EEE5DA;" />
+            </div>
+            <?php
             woocommerce_product_loop_start();
 
             if (wc_get_loop_prop('is_shortcode')) {

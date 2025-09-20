@@ -176,6 +176,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Homepage hero: rotating motivational messages
+    const rotatorEl = document.getElementById('motivation-rotator');
+    if (rotatorEl) {
+        const messages = [
+            'Snaga za napredak.',
+            'Treniraj pametno, oporavljaj brzo.',
+            'Disciplinom do rezultata.',
+            'Za rekreativce i profesionalce.'
+        ];
+        let idx = 0;
+        const swap = () => {
+            idx = (idx + 1) % messages.length;
+            rotatorEl.style.opacity = '0';
+            setTimeout(() => {
+                rotatorEl.textContent = messages[idx];
+                rotatorEl.style.opacity = '1';
+            }, 200);
+        };
+        rotatorEl.style.transition = 'opacity 220ms ease';
+        setInterval(swap, 3000);
+    }
+    
+    // Homepage hero: background slide crossfade (optional images)
+    const slidesWrap = document.querySelector('.hero-slides');
+    if (slidesWrap) {
+        const slides = slidesWrap.querySelectorAll('.hero-slide');
+        if (slides.length > 1) {
+            let si = 0;
+            setInterval(() => {
+                slides[si].classList.remove('is-active');
+                si = (si + 1) % slides.length;
+                slides[si].classList.add('is-active');
+            }, 4500);
+        }
+    }
+    
 });
 
 // WooCommerce cart fragment safety re-label after refresh

@@ -102,3 +102,5 @@ defined( 'ABSPATH' ) || exit;
 	<?php do_action( 'woocommerce_after_cart_totals' ); ?>
 
 </div>
+
+<p class="micro-hint" style="margin-top:10px; color:#555; font-size:.9rem; text-align:center;">Plaćanje pouzećem • Dostava brzom poštom</p>
